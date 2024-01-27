@@ -6,12 +6,14 @@ class Square(Function):
     def forward(self, x):
         return x ** 2
 
-x = Variable(np.array(10))
-f = Square()
-y = f(x)
 
-print(type(x))
-print(y.data)
+if __name__ == "__main__":
+    x = Variable(np.array(10))
+    f = Square()
+    y = f(x)
 
-f1 = Square()
-print(f1(y).data)
+    print(type(x))
+    print(y.data)
+
+    f1 = Square()
+    print(f1(y).data)
