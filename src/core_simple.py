@@ -7,6 +7,12 @@ def as_array(x):
     return x
 
 
+def as_variable(obj):
+    if isinstance(obj, Variable):
+        return obj
+    return Variable(obj)
+
+
 class Variable:
 
     def __init__(self, data) -> None:
@@ -17,7 +23,7 @@ class Variable:
         self.data = data
         self.grad = None
         self.creator = None
-    
+
     def set_creator(self, func):
         self.creator = func
     
@@ -28,29 +34,39 @@ class Variable:
         funcs = [self.creator]
         while funcs:
             f = funcs.pop()
-            x, y = f.input, f.output
-            x.grad = f.backward(y.grad)
+            gys = [output.grad for output in f.outputs]
+            gxs = f.backward(*gys)
+            if not isinstance(gxs, tuple):
+                gxs = (gxs,)
+            
+            for x, gx in zip(f.inputs, gxs):
+                x.grad = gx
 
-            if x.creator is not None:
-                funcs.append(x.creator)
+                if x.creator is not None:
+                    funcs.append(x.creator)
 
 
 class Function:
     
-    def __call__(self, input):
-        x = input.data
-        y = self.forward(x)
-        output = Variable(as_array(y))
-        output.set_creator(self)
+    def __call__(self, *inputs):
+        inputs = [as_variable(x) for x in inputs]
+        xs = [x.data for x in inputs]
+        ys = self.forward(*xs)
+        if not isinstance(ys, tuple):
+            ys = (ys,)
+        outputs = [Variable(as_array(y)) for y in ys]
+        for output in outputs:
+            output.set_creator(self)
 
-        self.input = input
-        self.output = output
+        self.inputs = inputs
+        self.outputs = outputs
 
-        return output
-    
+        return outputs if len(outputs) > 1 else outputs[0]
+
     def forward(self, x):
         raise NotImplementedError()
-    
+
     def backward(self, gy):
         raise NotImplementedError()
+
 
