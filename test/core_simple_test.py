@@ -2,7 +2,7 @@ if '__file__' in globals():
     import os, sys
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from src import Variable
+from dazero import Variable
 
 import numpy as np
 
