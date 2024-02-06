@@ -7,6 +7,7 @@ from dazero.core import as_variable
 from dazero.core import setup_variable
 
 import dazero.utils
+import dazero.functions
 
 setup_variable()
 
