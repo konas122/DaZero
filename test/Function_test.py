@@ -1,5 +1,5 @@
 from header import *
-from dazero.core_simple import Variable, Function
+from dazero.core import Variable, Function
 
 
 class Square(Function):

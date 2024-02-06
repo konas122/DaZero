@@ -173,7 +173,6 @@ class Add(Function):
     def backward(self, gy):
         return gy, gy
 
-
 def add(x0, x1):
     x1 = as_array(x1)
     return Add()(x0, x1)
@@ -188,7 +187,6 @@ class Mul(Function):
         x0, x1 = self.inputs[0].data, self.inputs[1].data
         return gy * x1, gy * x0
 
-
 def mul(x0, x1):
     x1 = as_array(x1)
     return Mul()(x0, x1)
@@ -200,7 +198,6 @@ class Neg(Function):
 
     def backward(self, gy):
         return -gy
-
 
 def neg(x):
     return Neg()(x)
@@ -214,11 +211,9 @@ class Sub(Function):
     def backward(self, gy):
         return gy, -gy
 
-
 def sub(x0, x1):
     x1 = as_array(x1)
     return Sub()(x0, x1)
-
 
 def rsub(x0, x1):
     x1 = as_array(x1)
@@ -236,11 +231,9 @@ class Div(Function):
         gx1 = gy * (-x0 / x1 ** 2)
         return gx0, gx1
 
-
 def div(x0, x1):
     x1 = as_array(x1)
     return Div()(x0, x1)
-
 
 def rdiv(x0, x1):
     x1 = as_array(x1)
@@ -261,7 +254,6 @@ class Pow(Function):
 
         gx = c * x ** (c - 1) * gy
         return gx
-
 
 def pow(x, c):
     return Pow(c)(x)

@@ -1,5 +1,5 @@
 from header import *
-from dazero.core_simple import Variable, Function, as_array
+from dazero.core import Variable, Function, as_array
 
 
 class Add(Function):
