@@ -53,7 +53,7 @@ class Variable:
     def set_creator(self, func):
         self.creator = func
         self.generation = func.generation + 1
-    
+
     def backward(self, retain_grad=False, create_graph=False):
         if self.grad is None:
             self.grad = Variable(np.ones_like(self.data))
@@ -98,7 +98,22 @@ class Variable:
 
     def zero_grad(self):
         self.grad = None
-    
+
+    def sum(self, axis=None, keepdims=True):
+        return dazero.functions.sum(axis, keepdims)
+
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = shape[0]
+        return dazero.functions.reshape(self, shape)
+
+    def transpose(self):
+        return dazero.functions.transpose(self)
+
+    @property
+    def T(self):
+        return dazero.functions.transpose(self)
+
     @property
     def shape(self):
         return self.data.shape
