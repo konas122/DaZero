@@ -5,6 +5,44 @@ from dazero import utils
 from dazero.core import Function, Variable, as_variable, as_array
 
 
+# ============================== Matrix ================================
+
+class Matmul(Function):
+    def forward(self, x, W):
+        y = x.dot(W)
+        return y
+        
+    def backward(self, gy):
+        x, W = self.inputs
+        gx = matmul(gy, W.T)
+        gW = matmul(x.T, gy)
+        return gx, gW
+
+def matmul(x, W):
+    return Matmul()(x, W)
+
+
+# ============================== Loss =================================
+
+class MSELoss(Function):
+    def forward(self, x0, x1):
+        diff = x0 - x1
+        y = (diff ** 2).sum() / len(diff)
+        return y
+    
+    def backward(self, gy):
+        x0, x1 = self.inputs
+        diff = x0 - x1
+        gx0 = gy * diff * (2. / len(diff))
+        gx1 = -gx0
+        return gx0, gx1
+
+def mse_loss(x0, x1):
+    return MSELoss()(x0, x1)
+
+
+# ============================== Shape =================================
+
 class Reshape(Function):
     def __init__(self, shape):
         self.shape = shape
@@ -61,6 +99,46 @@ class Sum(Function):
 
 def sum(x, axis=None, keepdims=False):
     return Sum(axis, keepdims)(x)
+
+
+class BroadcastTo(Function):
+    def __init__(self, shape):
+        self.shape = shape
+        self.x_shape = None
+    
+    def forward(self, x):
+        self.x_shape = x.shape
+        y = np.broadcast_to(x, self.shape)
+        return y
+    
+    def backward(self, gy):
+        gx = sum_to(gy, self.x_shape)
+        return gx
+
+def broadcast_to(x, shape):
+    if x.shape == shape:
+        return as_variable(x)
+    return BroadcastTo(shape)(x)
+
+
+class SumTo(Function):
+    def __init__(self, shape):
+        self.shape = shape
+        self.x_shape = None
+    
+    def forward(self, x):
+        self.x_shape = x.shape
+        y = utils.sum_to_utils(x, self.shape)
+        return y
+    
+    def backward(self, gy):
+        gx = broadcast_to(gy, self.x_shape)
+        return gx
+
+def sum_to(x, shape):
+    if x.shape == shape:
+        return as_variable(x)
+    return SumTo(shape)(x)
 
 
 # ============================= Basic functions =============================
