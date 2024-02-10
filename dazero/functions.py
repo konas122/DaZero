@@ -5,6 +5,43 @@ from dazero import utils
 from dazero.core import Function, Variable, as_variable, as_array
 
 
+# ============================== NetWork ================================
+
+class Linear(Function):
+    def forward(self, x, W, b):
+        y = x.dot(W)
+        if b is not None:
+            y += b
+        return y
+    
+    def backward(self, gy):
+        x, W, b = self.inputs
+        gb = None if b.data is None else sum_to(gy, b.shape)
+        gx = matmul(gy, W.T)
+        gW = matmul(x.T, gy)
+        return gx, gW, gb
+
+def linear(x, W, b=None):
+    return Linear()(x, W, b)
+
+
+# ======================== Activation Function =========================
+
+class Sigmoid(Function):
+    def forward(self, x):
+        # y = 1 / (1 + xp.exp(-x))
+        y = np.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
+        return y
+    
+    def backward(self, gy):
+        y = self.outputs[0]()
+        gx = gy * y * (1 - y)
+        return gx
+
+def sigmoid(x):
+    return Sigmoid()(x)
+
+
 # ============================== Matrix ================================
 
 class Matmul(Function):
@@ -41,7 +78,7 @@ def mse_loss(x0, x1):
     return MSELoss()(x0, x1)
 
 
-# ============================== Shape =================================
+# ========================== Tensor Operation =============================
 
 class Reshape(Function):
     def __init__(self, shape):
@@ -183,3 +220,31 @@ class Tanh(Function):
 
 def tanh(x):
     return Tanh()(x)
+
+
+class Exp(Function):
+    def forward(self, x):
+        y = np.exp(x)
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()  # weakref
+        gx = gy * y
+        return gx
+
+def exp(x):
+    return Exp()(x)
+
+
+class Log(Function):
+    def forward(self, x):
+        y = np.log(x)
+        return y
+
+    def backward(self, gy):
+        x, = self.inputs
+        gx = gy / x
+        return gx
+
+def log(x):
+    return Log()(x)
