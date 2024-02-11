@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from dazero import Variable
+from header import *
+from dazero import Parameter
 import dazero.functions as F
 
 lr = 0.1
@@ -28,10 +29,10 @@ if __name__ == "__main__":
     # plt.scatter(x, y)
     # plt.show()
 
-    x, y = Variable(x), Variable(y)
+    x, y = Parameter(x), Parameter(y)
 
-    W = Variable(np.random.randn(1, 1))
-    b = Variable(np.random.randn(1))
+    W = Parameter(np.random.randn(1, 1))
+    b = Parameter(np.random.randn(1))
 
     for i in range(iters):
         y_hat = predict(x, W, b)
@@ -43,7 +44,7 @@ if __name__ == "__main__":
 
         W.data -= lr * W.grad.data
         b.data -= lr * b.grad.data
-        print(W.data, b.data, loss.data)
+        print(W.data, b.data, loss.data, sep='\t')
 
     x_pred = np.linspace(0, 1, 100)
     y_pred = b.data + W.data * x_pred
