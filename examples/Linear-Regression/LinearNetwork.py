@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from header import *
 from dazero import Model
+from dazero import optimizers
 import dazero.layers as L
 import dazero.functions as F
 
@@ -18,6 +19,7 @@ lr = 0.01
 iters = 10000
 
 np.random.seed(0)
+
 x = np.random.rand(batch_size, in_dims)
 y = np.sin(2 * np.pi * x) + np.random.rand(batch_size, in_dims)
 
@@ -34,6 +36,8 @@ class Network(Model):
 
 
 model = Network(in_dims, hidden_dims, in_dims)
+optim = optimizers.Adam(model)
+
 for i in range(iters):
     y_pred = model(x)
     loss = F.mse_loss(y, y_pred)
@@ -41,8 +45,9 @@ for i in range(iters):
     model.zero_grad()
     loss.backward()
 
-    for p in model.params():
-        p.data -= lr * p.grad.data
+    # for p in model.params():
+    #     p.data -= lr * p.grad.data
+    optim.step()
     if i % 1000 == 0:
         print(loss.data)
 

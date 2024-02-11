@@ -151,6 +151,12 @@ def setup_variable():
     Variable.__truediv__ = div
     Variable.__rtruediv__ = rdiv
     Variable.__pow__ = pow
+    Variable.__getitem__ = dazero.functions.get_item
+
+    Variable.matmul = dazero.functions.matmul
+    Variable.dot = dazero.functions.matmul
+    Variable.max = dazero.functions.max
+    Variable.min = dazero.functions.min
 
 
 class Parameter(Variable):

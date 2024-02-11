@@ -12,6 +12,8 @@ from dazero.models import Model
 
 import dazero.utils
 import dazero.functions
+import dazero.optimizers
+import dazero.datasets
 
 setup_variable()
 
