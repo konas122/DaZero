@@ -11,6 +11,8 @@ from dazero import Model
 from dazero import optimizers
 import dazero.layers as L
 import dazero.functions as F
+from dazero import DataLoader
+from dazero.datasets import Spiral
 
 
 # Hyperparameters
@@ -41,39 +43,51 @@ class MLP(Model):
         return self.layers[-1](x)
 
 
-x, t = dazero.datasets.get_spiral(train=True)
+train_set = Spiral(train=True)
+train_loader = DataLoader(train_set, batch_size, shuffle=True)
+test_set = Spiral(train=False)
+test_loader = DataLoader(test_set, batch_size, shuffle=False)
 
-model = MLP(x.shape[1], (hidden_size, 3))
+data_size = len(train_set)
+model = MLP(2, (hidden_size, 3))
 optimizer = optimizers.SGD(model, lr)
 
-data_size = len(x)
-max_iter = math.ceil(data_size / batch_size)
 
 for epoch in range(max_epoch):
-    # Shuffle index for data
-    index = np.random.permutation(data_size)
-    sum_loss = 0
+    sum_loss, sum_acc = 0, 0
 
-    for i in range(max_iter):
-        batch_index = index[i * batch_size:(i + 1) * batch_size]
-        batch_x = x[batch_index]
-        batch_t = t[batch_index]
-
+    for batch_x, batch_t in train_loader:
         y = model(batch_x)
         loss = F.softmax_cross_entropy(y, batch_t)
+        acc = F.accuracy(y, batch_t)
         model.zero_grad()
         loss.backward()
         optimizer.step()
 
         sum_loss += float(loss.data) * len(batch_t)
+        sum_acc += float(acc.data) * len(batch_t)
 
     # Print loss every epoch
     if epoch % 10 == 0:
-        avg_loss = sum_loss / data_size
-        print('epoch %d, loss %.2f' % (epoch + 1, avg_loss))
+        print('epoch: {}'.format(epoch+1))
+        print('\ttrain loss: {:.4f}, accuracy: {:.4f}'.format(
+            sum_loss / len(train_set), sum_acc / len(train_set)))
+    
+        sum_loss, sum_acc = 0, 0
+        with dazero.no_grad():
+            for x, t in test_loader:
+                y = model(x)
+                loss = F.softmax_cross_entropy(y, t)
+                acc = F.accuracy(y, t)
+                sum_loss += float(loss.data) * len(t)
+                sum_acc += float(acc.data) * len(t)
+
+        print('\ttest  loss: {:.4f}, accuracy: {:.4f}'.format(
+            sum_loss / len(test_set), sum_acc / len(test_set)))
 
 # Plot boundary area the model predict
 h = 0.001
+x, t = train_set.data, train_set.label
 x_min, x_max = x[:, 0].min() - .1, x[:, 0].max() + .1
 y_min, y_max = x[:, 1].min() - .1, x[:, 1].max() + .1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))

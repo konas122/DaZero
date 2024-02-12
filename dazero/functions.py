@@ -48,6 +48,21 @@ def sigmoid(x):
     return Sigmoid()(x)
 
 
+class ReLU(Function):
+    def forward(self, x):
+        y = np.maximum(x, 0.0)
+        return y
+
+    def backward(self, gy):
+        x, = self.inputs
+        mask = x.data > 0
+        gx = gy * mask
+        return gx
+
+def relu(x):
+    return ReLU()(x)
+
+
 def softmax_simple(x, axis=1):
     x = as_variable(x)
     y = exp(x)
@@ -298,6 +313,20 @@ class GetItemGrad(Function):
 def get_item(x, slices):
     f = GetItem(slices)
     return f(x)
+
+
+# =============== accuracy / dropout / batch_norm / embed_id ================
+
+def accuracy(y, t):
+    """
+    [WAR] This function is not differentiable.
+    """
+    y, t = as_variable(y), as_variable(t)
+
+    pred = y.data.argmax(axis=1).reshape(t.shape)
+    result = (pred == t.data)
+    acc = result.mean()
+    return Variable(as_array(acc))
 
 
 # ============================= Basic functions =============================
