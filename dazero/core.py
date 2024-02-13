@@ -36,12 +36,19 @@ def as_variable(obj):
 
 # ============================== Variable ===================================
 
+try:
+    import cupy
+    array_types = (np.ndarray, cupy.ndarray)
+except ImportError:
+    array_types = (np.ndarray)
+
+
 class Variable:
     __array_priority__ = 200
 
     def __init__(self, data, name=None) -> None:
         if data is not None:
-            if not isinstance(data, np.ndarray):
+            if not isinstance(data, array_types):
                 raise TypeError('{} is not supported!'.format(type(data)))
 
         self.data = data
