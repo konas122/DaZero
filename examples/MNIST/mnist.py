@@ -74,3 +74,5 @@ for epoch in range(max_epoch):
 
     print('\ttest  loss: {:.4f}, accuracy: {:.4f}'.format(
         sum_loss / len(test_set), sum_acc / len(test_set)))
+
+print(dazero.cuda.gpu_enable)
