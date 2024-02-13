@@ -1,7 +1,6 @@
 import math
-import numpy as np
 
-from dazero import Model, Parameter
+from dazero import Model, Parameter, cuda
 
 
 class Optimizer:
@@ -51,7 +50,8 @@ class MomentumSGD(Optimizer):
     def step_one(self, param):
         v_key = id(param)
         if v_key not in self.vs:
-            self.vs[v_key] = np.zeros_like(param.data)
+            xp = cuda.get_array_module(param.data)
+            self.vs[v_key] = xp.zeros_like(param.data)
         
         v = self.vs[v_key]
         v *= self.momentum
@@ -67,9 +67,11 @@ class AdaGrad(Optimizer):
         self.hs = {}
     
     def step_one(self, param):
+        xp = cuda.get_array_module(param.data)
+
         h_key = id(param)
         if h_key not in self.hs:
-            self.hs[h_key] = np.zeros_like(param.data)
+            self.hs[h_key] = xp.zeros_like(param.data)
         
         lr = self.lr
         eps = self.eps
@@ -77,7 +79,7 @@ class AdaGrad(Optimizer):
         h = self.hs[h_key]
 
         h += grad * grad
-        param.data -= lr * grad / (np.sqrt(h) + eps)
+        param.data -= lr * grad / (xp.sqrt(h) + eps)
     
 
 class AdaDelta(Optimizer):
@@ -89,10 +91,12 @@ class AdaDelta(Optimizer):
         self.msdx = {}
 
     def step_one(self, param):
+        xp = cuda.get_array_module(param.data)
+
         key = id(param)
         if key not in self.msg:
-            self.msg[key] = np.zeros_like(param.data)
-            self.msdx[key] = np.zeros_like(param.data)
+            self.msg[key] = xp.zeros_like(param.data)
+            self.msdx[key] = xp.zeros_like(param.data)
 
         msg, msdx = self.msg[key], self.msdx[key]
         rho = self.rho
@@ -101,7 +105,7 @@ class AdaDelta(Optimizer):
 
         msg *= rho
         msg += (1 - rho) * grad * grad
-        dx = np.sqrt((msdx + eps) / (msg + eps)) * grad
+        dx = xp.sqrt((msdx + eps) / (msg + eps)) * grad
         msdx *= rho
         msdx += (1 - rho) * dx * dx
         param.data -= dx
@@ -129,10 +133,12 @@ class Adam(Optimizer):
         return self.alpha * math.sqrt(fix2) / fix1
 
     def step_one(self, param):
+        xp = cuda.get_array_module(param.data)
+
         key = id(param)
         if key not in self.ms:
-            self.ms[key] = np.zeros_like(param.data)
-            self.vs[key] = np.zeros_like(param.data)
+            self.ms[key] = xp.zeros_like(param.data)
+            self.vs[key] = xp.zeros_like(param.data)
 
         m, v = self.ms[key], self.vs[key]
         beta1, beta2, eps = self.beta1, self.beta2, self.eps
@@ -140,7 +146,7 @@ class Adam(Optimizer):
 
         m += (1 - beta1) * (grad - m)
         v += (1 - beta2) * (grad * grad - v)
-        param.data -= self.lr * m / (np.sqrt(v) + eps)
+        param.data -= self.lr * m / (xp.sqrt(v) + eps)
 
 
 # ============================ Hook Functions ===============================

@@ -1,4 +1,5 @@
 from header import *
+import dazero
 from dazero.core import Variable, Function, as_array
 
 
@@ -12,7 +13,7 @@ class Add(Function):
 
 
 def add(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Add()(x0, x1)
 
 

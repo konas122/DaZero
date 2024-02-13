@@ -13,6 +13,7 @@ from dazero.datasets import Dataset
 from dazero.dataloaders import DataLoader
 # from dazero.dataloaders import SeqDataLoader
 
+import dazero.cuda
 import dazero.utils
 import dazero.layers
 import dazero.functions

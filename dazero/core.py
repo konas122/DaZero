@@ -22,9 +22,9 @@ def no_grad():
     return using_config("enable_backprop", False)
 
 
-def as_array(x):
+def as_array(x, array_module=np):
     if np.isscalar(x):
-        return np.array(x)
+        return array_module.array(x)
     return x
 
 
@@ -56,8 +56,9 @@ class Variable:
 
     def backward(self, retain_grad=False, create_graph=False):
         if self.grad is None:
-            self.grad = Variable(np.ones_like(self.data))
-        
+            xp = dazero.cuda.get_array_module(self.data)
+            self.grad = Variable(xp.ones_like(self.data))
+
         funcs = []
         seen_set = set()
 
@@ -143,6 +144,14 @@ class Variable:
             return 'variable(None)'
         p = str(self.data).replace('\n', '\n' + ' ' * 9)
         return 'variable(' + p + ')'
+    
+    def to_cpu(self):
+        if self.data is not None:
+            self.data = dazero.cuda.as_numpy(self.data)
+
+    def to_gpu(self):
+        if self.data is not None:
+            self.data = dazero.cuda.as_cupy(self.data)
 
 
 def setup_variable():
@@ -213,7 +222,7 @@ class Add(Function):
         return gx0, gx1
 
 def add(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Add()(x0, x1)
 
 
@@ -232,7 +241,7 @@ class Mul(Function):
         return gx0, gx1
 
 def mul(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Mul()(x0, x1)
 
 
@@ -262,11 +271,11 @@ class Sub(Function):
         return gx0, gx1
 
 def sub(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Sub()(x0, x1)
 
 def rsub(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Sub()(x1, x0)
 
 
@@ -285,11 +294,11 @@ class Div(Function):
         return gx0, gx1
 
 def div(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Div()(x0, x1)
 
 def rdiv(x0, x1):
-    x1 = as_array(x1)
+    x1 = as_array(x1, dazero.cuda.get_array_module(x0.data))
     return Div()(x1, x0)
 
 
