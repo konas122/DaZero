@@ -6,7 +6,7 @@ import dazero
 from dazero import Model
 import dazero.layers as L
 import dazero.functions as F
-from dazero import DataLoader
+from dazero import DataLoader, cuda
 
 
 max_epoch = 2
@@ -44,6 +44,13 @@ model = MLP(784, (hidden_size, hidden_size, 10), activation=F.relu)
 optimizer = dazero.optimizers.Adam(model)
 optimizer.add_hook(dazero.optimizers.WeightDecay(1e-4))  # Weight decay
 
+if cuda.gpu_enable:
+    train_loader.to_gpu()
+    test_loader.to_gpu()
+    model.to_gpu()
+    print("Using gpu")
+else:
+    print("Using cpu")
 
 for epoch in range(max_epoch):
     sum_loss, sum_acc = 0, 0
