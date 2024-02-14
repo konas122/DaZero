@@ -49,7 +49,7 @@ class Layer:
             param.to_gpu()
 
     def _flatten_params(self, param_dict, parent_key=""):
-        for name in param_dict:
+        for name in self._params:
             obj = self.__dict__[name]
             key = parent_key + '/' + name if parent_key else name
 
