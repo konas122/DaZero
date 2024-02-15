@@ -111,8 +111,8 @@ class Variable:
     def zero_grad(self):
         self.grad = None
 
-    def sum(self, axis=None, keepdims=True):
-        return dazero.functions.sum(axis, keepdims)
+    def sum(self, axis=None, keepdims=False):
+        return dazero.functions.sum(self, axis, keepdims)
 
     def reshape(self, *shape):
         if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
