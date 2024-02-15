@@ -19,4 +19,7 @@ with dazero.test_mode():
     y = model(x)
 predict_id = np.argmax(y.data)
 print(predict_id)
+labels = dazero.datasets.ImageNet.labels()
+print(labels[predict_id])
+
 model.plot(x, to_file='resnet152.pdf')
