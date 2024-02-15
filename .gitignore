@@ -11,4 +11,15 @@ model.png
 graph.png
 goldstein.png
 
+vgg.pdf
+
+vgg16.png
+vgg16.pdf
+resnet50.png
+resnet50.pdf
+resnet152.png
+resnet152.pdf
+resnet101.png
+resnet101.pdf
+
 *.npz
