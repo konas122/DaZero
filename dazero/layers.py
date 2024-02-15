@@ -90,7 +90,7 @@ class MaxPool2d(Layer):
         self.pad = pad
     
     def forward(self, x):
-        return F.pooling(x, self.kernel_size, self.stride, self.pad)
+        return F.max_pooling(x, self.kernel_size, self.stride, self.pad)
 
 
 class AvgPool2d(Layer):

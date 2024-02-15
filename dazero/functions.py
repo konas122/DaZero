@@ -564,7 +564,7 @@ from dazero.functions_conv import conv2d_simple
 from dazero.functions_conv import im2col
 from dazero.functions_conv import col2im
 from dazero.functions_conv import pooling_simple
-from dazero.functions_conv import pooling
+from dazero.functions_conv import max_pooling
 from dazero.functions_conv import average_pooling
 
 from dazero.core import add
