@@ -108,6 +108,19 @@ class Variable:
                 for y in f.outputs:
                     y().grad = None
 
+    def detach(self):
+        if self.creator is not None:
+            funcs = [self.creator]
+            while funcs:
+                f = funcs.pop()
+                for x in f.inputs:
+                    if x.creator is not None:
+                        funcs.append(x.creator)
+                        x._detach()
+
+    def _detach(self):
+        self.creator = None
+
     def zero_grad(self):
         self.grad = None
 
