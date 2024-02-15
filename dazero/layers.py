@@ -104,7 +104,9 @@ class AvgPool2d(Layer):
         return F.average_pooling(x, self.kernel_size, self.stride, self.pad)
 
 
-# ===========================================================================
+# =============================================================================
+# Linear / Conv2d / Deconv2d
+# =============================================================================
 
 class Linear(Layer):
     def __init__(self, in_size=None, out_size=None, nobias=False, dtype=np.float32):
@@ -234,3 +236,69 @@ class BatchNorm(Layer):
         if self.avg_mean.data is None:
             self._init_params(x)
         return F.batch_norm(x, self.gamma, self.beta, self.avg_mean.data, self.avg_var.data)
+
+
+# =============================================================================
+# RNN / LSTM
+# =============================================================================
+
+class RNN(Layer):
+    def __init__(self, in_size, hidden_size):
+        super().__init__()
+        self.x2h = Linear(in_size,     hidden_size)
+        self.h2h = Linear(hidden_size, hidden_size, nobias=True)
+        self.h = None   # h_{t-1}
+
+    def reset_state(self):
+        self.h = None
+    
+    def forward(self, x):
+        if self.h is None:
+            h_new = F.tanh(self.x2h(x))
+        else:
+            h_new = F.tanh(self.x2h(x) + self.h2h(self.h))
+        self.h = h_new
+        return h_new
+
+
+class LSTM(Layer):
+    def __init__(self, in_size, hidden_size):
+        super().__init__()
+        I, H = in_size, hidden_size
+
+        self.x2f = Linear(I, H)
+        self.x2i = Linear(I, H)
+        self.x2o = Linear(I, H)
+        self.x2u = Linear(I, H)
+
+        self.h2f = Linear(H, H, nobias=True)
+        self.h2i = Linear(H, H, nobias=True)
+        self.h2o = Linear(H, H, nobias=True)
+        self.h2u = Linear(H, H, nobias=True)
+
+        self.reset_state()
+
+    def reset_state(self):
+        self.h = None
+        self.c = None
+
+    def forward(self, x):
+        if self.h is None:
+            f = F.sigmoid(self.x2f(x))
+            i = F.sigmoid(self.x2i(x))
+            o = F.sigmoid(self.x2o(x))
+            u = F.tanh(   self.x2u(x))
+        else:
+            f = F.sigmoid(self.x2f(x) + self.h2f(self.h))
+            i = F.sigmoid(self.x2i(x) + self.h2i(self.h))
+            o = F.sigmoid(self.x2o(x) + self.h2o(self.h))
+            u = F.tanh(   self.x2u(x) + self.h2u(self.h))
+
+        if self.c is None:
+            c_new = i * u
+        else:
+            c_new = (f * self.c) + (i * u)
+        h_new = o * F.tanh(c_new)
+
+        self.h, self.c = h_new, c_new
+        return h_new

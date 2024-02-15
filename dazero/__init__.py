@@ -12,7 +12,7 @@ from dazero.layers import Layer
 from dazero.models import Model
 from dazero.datasets import Dataset
 from dazero.dataloaders import DataLoader
-# from dazero.dataloaders import SeqDataLoader
+from dazero.dataloaders import SeqDataLoader
 
 import dazero.cuda
 import dazero.utils
