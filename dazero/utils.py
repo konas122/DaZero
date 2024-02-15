@@ -35,17 +35,17 @@ def sum_to_utils(x, shape):
 
 
 def reshape_sum_backward(gy, x_shape, axis, keepdims):
-    """Reshape gradient appropriately for dezero.functions.sum's backward.
+    """Reshape gradient appropriately for dazero.functions.sum's backward.
 
     Args:
-        gy (dezero.Variable): Gradient variable from the output by backprop.
+        gy (dazero.Variable): Gradient variable from the output by backprop.
         x_shape (tuple): Shape used at sum function's forward.
         axis (None or int or tuple of ints): Axis used at sum function's
             forward.
         keepdims (bool): Keepdims used at sum function's forward.
 
     Returns:
-        dezero.Variable: Gradient variable which is reshaped appropriately
+        dazero.Variable: Gradient variable which is reshaped appropriately
     """
     ndim = len(x_shape)
     tupled_axis = axis
@@ -139,7 +139,7 @@ def get_dot_graph(output, verbose=False):
 def plot_dot_graph(output, verbose=False, to_file='graph.png'):
     dot_graph = get_dot_graph(output, verbose)
 
-    tmp_dir = os.path.join(os.path.expanduser('~'), '.dezero')
+    tmp_dir = os.path.join(os.path.expanduser('~'), '.dazero')
     if not os.path.exists(tmp_dir):
         os.mkdir(tmp_dir)
     graph_path = os.path.join(tmp_dir, 'tmp_graph.dot')
@@ -173,13 +173,13 @@ def show_progress(block_num, block_size, total_size):
     print(bar_template.format(bar, p), end='')
 
 
-cache_dir = os.path.join(os.path.expanduser('~'), '.dezero')
+cache_dir = os.path.join(os.path.expanduser('~'), '.dazero')
 
 
 def get_file(url, file_name=None):
     """Download a file from the `url` if it is not in the cache.
 
-    The file at the `url` is downloaded to the `~/.dezero`.
+    The file at the `url` is downloaded to the `~/.dazero`.
 
     Args:
         url (str): URL of the file.
