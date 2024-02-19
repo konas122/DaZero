@@ -38,7 +38,7 @@ class DataLoader:
             raise StopIteration()
 
         i, batch_size = self.iteration, self.batch_size
-        batch_index = self.index[i * batch_size : (i + 1) * batch_size]
+        batch_index = self.index[i * batch_size: (i + 1) * batch_size]
         batch = [self.dataset[i] for i in batch_index]
 
         xp = cuda.cupy if self.gpu else np

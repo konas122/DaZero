@@ -13,7 +13,7 @@ class Linear(Function):
         if b is not None:
             y += b
         return y
-    
+
     def backward(self, gy):
         x, W, b = self.inputs
         gb = None if b.data is None else sum_to(gy, b.shape)
@@ -39,7 +39,7 @@ class Sigmoid(Function):
         # y = 1 / (1 + xp.exp(-x))
         y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
         return y
-    
+
     def backward(self, gy):
         y = self.outputs[0]()
         gx = gy * y * (1 - y)
@@ -243,13 +243,13 @@ class BroadcastTo(Function):
     def __init__(self, shape):
         self.shape = shape
         self.x_shape = None
-    
+
     def forward(self, x):
         self.x_shape = x.shape
         xp = cuda.get_array_module(x)
         y = xp.broadcast_to(x, self.shape)
         return y
-    
+
     def backward(self, gy):
         gx = sum_to(gy, self.x_shape)
         return gx
@@ -273,12 +273,12 @@ class SumTo(Function):
     def __init__(self, shape):
         self.shape = shape
         self.x_shape = None
-    
+
     def forward(self, x):
         self.x_shape = x.shape
         y = utils.sum_to_utils(x, self.shape)
         return y
-    
+
     def backward(self, gy):
         gx = broadcast_to(gy, self.x_shape)
         return gx
@@ -292,11 +292,11 @@ def sum_to(x, shape):
 class GetItem(Function):
     def __init__(self, slices):
         self.slices = slices
-    
+
     def forward(self, x):
         y = x[self.slices]
         return y
-    
+
     def backward(self, gy):
         x, = self.inputs
         f = GetItemGrad(self.slices, x.shape)
@@ -306,7 +306,7 @@ class GetItemGrad(Function):
     def __init__(self, slices, in_shape):
         self.slices = slices
         self.in_shape = in_shape
-    
+
     def forward(self, gy):
         xp = cuda.get_array_module(gy)
         gx = xp.zeros(self.in_shape, dtype=gy.dtype)
@@ -446,7 +446,7 @@ class Cos(Function):
         xp = cuda.get_array_module(x)
         y = xp.cos(x)
         return y
-    
+
     def backward(self, gy):
         x, = self.inputs
         gx = gy * -sin(x)

@@ -93,7 +93,7 @@ class Variable:
                 gxs = f.backward(*gys)
                 if not isinstance(gxs, tuple):
                     gxs = (gxs,)
-                
+
                 for x, gx in zip(f.inputs, gxs):
                     if x.grad is None:
                         x.grad = gx
@@ -158,7 +158,7 @@ class Variable:
     @property
     def size(self):
         return self.data.size
-    
+
     def __len__(self):
         return len(self.data)
 
@@ -167,7 +167,7 @@ class Variable:
             return 'variable(None)'
         p = str(self.data).replace('\n', '\n' + ' ' * 9)
         return 'variable(' + p + ')'
-    
+
     def to_cpu(self):
         if self.data is not None:
             self.data = dazero.cuda.as_numpy(self.data)
@@ -203,7 +203,7 @@ class Parameter(Variable):
 # =============================== Function ==================================
 
 class Function:
-    
+
     def __call__(self, *inputs):
         inputs = [as_variable(x) for x in inputs]
         xs = [x.data for x in inputs]

@@ -88,7 +88,7 @@ class MaxPool2d(Layer):
         self.kernel_size = kernel_size
         self.stride = stride
         self.pad = pad
-    
+
     def forward(self, x):
         return F.max_pooling(x, self.kernel_size, self.stride, self.pad)
 
@@ -251,7 +251,7 @@ class RNN(Layer):
 
     def reset_state(self):
         self.h = None
-    
+
     def forward(self, x):
         if self.h is None:
             h_new = F.tanh(self.x2h(x))
