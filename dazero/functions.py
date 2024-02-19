@@ -348,7 +348,7 @@ def dropout(x, dropout_ratio=0.5):
     return x
 
 
-class BatchNorm(Function):
+class BatchNorm2d(Function):
     def __init__(self, mean, var, decay, eps):
         self.avg_mean = mean
         self.avg_var = var
@@ -417,7 +417,9 @@ class BatchNorm(Function):
 
 
 def batch_norm(x, gamma, beta, mean, var, decay=0.9, eps=2e-5):
-    return BatchNorm(mean, var, decay, eps)(x, gamma, beta)
+    """ `batch_norm` default use class `BatchNorm2d`. There is only this `BatchNorm2d`.
+    """
+    return BatchNorm2d(mean, var, decay, eps)(x, gamma, beta)
 
 
 def embed_id(x, W):

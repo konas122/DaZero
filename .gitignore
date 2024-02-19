@@ -29,4 +29,5 @@ resnet101.pdf
 
 grad_cam.png
 
+*.whl
 *.npz

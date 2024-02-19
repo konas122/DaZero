@@ -10,7 +10,7 @@ import dazero.functions as F
 
 x = Variable(np.linspace(-7, 7, 200))
 y = F.sin(x)
-y.backward(create_graph=True)
+y.backward(retain_graph=True)
 
 logs = [y.data]
 
@@ -18,7 +18,7 @@ for i in range(3):
     logs.append(x.grad.data)
     gx = x.grad
     x.zero_grad()
-    gx.backward(create_graph=True)
+    gx.backward(retain_graph=True)
 
 labels = ["y=sin(x)", "y'", "y''", "y'''"]
 

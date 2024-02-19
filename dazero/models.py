@@ -113,7 +113,7 @@ class ResNet(Model):
                              ' or 152, but {} was given.'.format(n_layers))
 
         self.conv1 = L.Conv2d(3, 64, 7, 2, 3)
-        self.bn1 = L.BatchNorm()
+        self.bn1 = L.BatchNorm2d()
         self.res2 = BuildingBlock(block[0], 64, 64, 256, 1)
         self.res3 = BuildingBlock(block[1], 256, 128, 512, 2)
         self.res4 = BuildingBlock(block[2], 512, 256, 1024, 2)
@@ -201,15 +201,15 @@ class BottleneckA(Layer):
 
         self.conv1 = L.Conv2d(in_channels, mid_channels, 1, stride_1x1, 0,
                               nobias=True)
-        self.bn1 = L.BatchNorm()
+        self.bn1 = L.BatchNorm2d()
         self.conv2 = L.Conv2d(mid_channels, mid_channels, 3, stride_3x3, 1,
                               nobias=True)
-        self.bn2 = L.BatchNorm()
+        self.bn2 = L.BatchNorm2d()
         self.conv3 = L.Conv2d(mid_channels, out_channels, 1, 1, 0, nobias=True)
-        self.bn3 = L.BatchNorm()
+        self.bn3 = L.BatchNorm2d()
         self.conv4 = L.Conv2d(out_channels, out_channels, 1, stride, 0,
                               nobias=True)
-        self.bn4 = L.BatchNorm()
+        self.bn4 = L.BatchNorm2d()
 
     def forward(self, x):
         h1 = F.relu(self.bn1(self.conv1(x)))
@@ -230,11 +230,11 @@ class BottleneckB(Layer):
         super().__init__()
 
         self.conv1 = L.Conv2d(in_channels, mid_channels, 1, 1, 0, nobias=True)
-        self.bn1 = L.BatchNorm()
+        self.bn1 = L.BatchNorm2d()
         self.conv2 = L.Conv2d(mid_channels, mid_channels, 3, 1, 1, nobias=True)
-        self.bn2 = L.BatchNorm()
+        self.bn2 = L.BatchNorm2d()
         self.conv3 = L.Conv2d(mid_channels, in_channels, 1, 1, 0, nobias=True)
-        self.bn3 = L.BatchNorm()
+        self.bn3 = L.BatchNorm2d()
 
     def forward(self, x):
         h = F.relu(self.bn1(self.conv1(x)))

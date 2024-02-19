@@ -14,7 +14,7 @@ for i in range(iters):
     print(i, x)
     y = f(x)
     x.zero_grad()
-    y.backward(create_graph=True)
+    y.backward(retain_graph=True)
 
     gx = x.grad
     x.zero_grad()

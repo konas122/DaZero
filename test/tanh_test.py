@@ -13,13 +13,13 @@ y = F.tanh(x)
 
 x.name = 'x'
 y.name = 'y'
-y.backward(create_graph=True)
+y.backward(retain_graph=True)
 
 iters = 0
 for i in range(iters):
     gx = x.grad
     x.zero_grad()
-    gx.backward(create_graph=True)
+    gx.backward(retain_graph=True)
 
 gx = x.grad
 gx.name = 'gx' + str(iters+1)

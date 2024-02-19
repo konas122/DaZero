@@ -197,7 +197,7 @@ class Deconv2d(Layer):
 
 
 # =============================================================================
-# EmbedID / BatchNorm
+# EmbedID / BatchNorm2d
 # =============================================================================
 class EmbedID(Layer):
     def __init__(self, in_size, out_size):
@@ -209,7 +209,7 @@ class EmbedID(Layer):
         return y
 
 
-class BatchNorm(Layer):
+class BatchNorm2d(Layer):
     def __init__(self):
         super().__init__()
         # `.avg_mean` and `.avg_var` are `Parameter` objects, so they will be

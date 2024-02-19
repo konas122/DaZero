@@ -65,7 +65,7 @@ class Variable:
         self.creator = func
         self.generation = func.generation + 1
 
-    def backward(self, retain_grad=False, create_graph=False):
+    def backward(self, retain_grad=False, retain_graph=False):
         if self.grad is None:
             xp = dazero.cuda.get_array_module(self.data)
             self.grad = Variable(xp.ones_like(self.data))
@@ -89,7 +89,7 @@ class Variable:
             f = funcs.pop()
             gys = [output().grad for output in f.outputs]
 
-            with using_config('enable_backprop', create_graph):
+            with using_config('enable_backprop', retain_graph):
                 gxs = f.backward(*gys)
                 if not isinstance(gxs, tuple):
                     gxs = (gxs,)
