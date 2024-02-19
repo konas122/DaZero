@@ -1,6 +1,7 @@
 .vs/
 .idea/
 .vscode/
+.pytest_cache/
 
 draft/
 __pycache__/
