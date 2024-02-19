@@ -322,7 +322,7 @@ def get_item(x, slices):
     return f(x)
 
 
-# =============== accuracy / dropout / batch_norm / embed_id ================
+# ========================== accuracy / dropout ============================
 
 def accuracy(y, t):
     """
@@ -347,6 +347,8 @@ def dropout(x, dropout_ratio=0.5):
         return y
     return x
 
+
+# ================== batch_norm / embed_id / layer_norm =====================
 
 class BatchNorm2d(Function):
     def __init__(self, mean, var, decay, eps):
@@ -416,14 +418,117 @@ class BatchNorm2d(Function):
         return gx, ggamma, gbeta
 
 
-def batch_norm(x, gamma, beta, mean, var, decay=0.9, eps=2e-5):
+def batch_norm(x, gamma=None, beta=None, mean=None, var=None, decay=0.9, eps=2e-5):
     """ `batch_norm` default use class `BatchNorm2d`. There is only this `BatchNorm2d`.
     """
+    xp = cuda.get_array_module(x)
+    D = x.shape[1]
+    if mean is None:
+        mean = xp.zeros(D, dtype=x.dtype)
+    if var is None:
+        var = xp.ones(D, dtype=x.dtype)
+    if gamma is None:
+        gamma = xp.ones(D, dtype=x.dtype)
+    if beta is None:
+        beta = xp.zeros(D, dtype=x.dtype)
     return BatchNorm2d(mean, var, decay, eps)(x, gamma, beta)
 
 
 def embed_id(x, W):
     return W[x]
+
+
+class LayerNorm(Function):
+    def __init__(self, normalized_shape, mean, var, eps):
+        if isinstance(normalized_shape, int):
+            normalized_shape = (normalized_shape,)
+        self.normalized_shape = normalized_shape
+        self.axis = None
+        self.axis_delta = None
+        self.avg_mean = mean
+        self.avg_var = var
+        self.eps = eps
+        self.inv_std = None
+
+    def forward(self, x, gamma, beta):
+        xp = cuda.get_array_module(x)
+        x_shape = x.shape
+
+        if self.axis is None:
+            assert len(x_shape) > len(self.normalized_shape)
+            self.axis = xp.arange(len(x_shape) - len(self.normalized_shape), len(x_shape))
+            self.axis = tuple(list(self.axis))
+            self.axis_delta = []
+            for i in range(len(x_shape)):
+                if i not in self.axis:
+                    self.axis_delta.append(i)
+            self.axis_delta = tuple(self.axis_delta)
+
+        if dazero.Config.train:
+            self.avg_mean = x.mean(axis=self.axis)
+            self.avg_var = x.var(axis=self.axis)
+
+            m = x.size // gamma.size
+            s = m - 1. if m - 1. > 1. else 1.
+            adjust = m / s  # unbiased estimation
+            self.avg_var *= adjust
+
+            for _ in range(len(self.axis)):
+                self.avg_mean = xp.expand_dims(self.avg_mean, -1)
+                self.avg_var = xp.expand_dims(self.avg_var, -1)
+
+            if len(gamma.shape) != len(x_shape):
+                for _ in range(len(x_shape) - len(self.axis)):
+                    gamma = xp.expand_dims(gamma, 0)
+                    beta = xp.expand_dims(beta, 0)
+
+            inv_std = 1 / xp.sqrt(self.avg_var + self.eps)
+            xc = (x - self.avg_mean) * inv_std
+
+            self.inv_std = inv_std
+        else:
+            inv_std = 1 / xp.sqrt(self.avg_var + self.eps)
+            xc = (x - self.avg_mean) * inv_std
+
+        y = gamma * xc + beta
+        return y
+
+    def backward(self, gy):
+        # previous layer delta
+        xp = cuda.get_array_module(gy)
+        normal_shape = xp.prod(self.normalized_shape)
+
+        x, gamma, beta = self.inputs
+
+        mean = self.avg_mean
+        xc = (x - mean) * self.inv_std
+
+        gbeta = sum(gy, axis=self.axis_delta)
+        ggamma = sum(xc * gy, axis=self.axis_delta)
+
+        # gx = gy - gbeta / batch_size - xc * ggamma / batch_size
+        # gx *= gamma * self.inv_std
+        gx_1 = gamma * gy * self.inv_std
+        gx_tmp = self.inv_std / normal_shape
+        gx_2 = gx_tmp * sum(gy * gamma, axis=self.axis, keepdims=True)
+        gx_3 = gx_tmp * xc * sum(gy * xc * gamma, axis=self.axis, keepdims=True)
+        gx = gx_1 - gx_2 - gx_3
+
+        return gx, ggamma, gbeta
+
+
+def layer_norm(x, normalized_shape, gamma=None, beta=None, mean=None, var=None, eps=2e-5):
+    xp = cuda.get_array_module(x)
+    D = x.shape[1]
+    if mean is None:
+        mean = xp.zeros(D, dtype=x.dtype)
+    if var is None:
+        var = xp.ones(D, dtype=x.dtype)
+    if gamma is None:
+        gamma = xp.ones(D, dtype=x.dtype)
+    if beta is None:
+        beta = xp.zeros(D, dtype=x.dtype)
+    return LayerNorm(normalized_shape, mean, var, eps)(x, gamma, beta)
 
 
 # ============================= Basic functions =============================

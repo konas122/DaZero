@@ -26,7 +26,7 @@ cupy (optional)
 * If you want to install the **GPU** version, you should install [CuPy](https://github.com/cupy/cupy) first, then run the command below.
 
 ```shell
-$ pip install git+https://github.com/konas122/DaZero.git
+$ pip install git+https://github.com/konas122/DaZero.git@v0.1
 ```
 
 **Learn from** [deep-learning-from-scratch-3](https://github.com/oreilly-japan/deep-learning-from-scratch-3)

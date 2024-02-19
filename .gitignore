@@ -31,3 +31,5 @@ grad_cam.png
 
 *.whl
 *.npz
+
+test/LayerNorm_test.py
