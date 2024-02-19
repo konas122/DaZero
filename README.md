@@ -18,7 +18,7 @@ matplotlib
 cupy (optional)
 ```
 
-## install
+## Install
 
 ```shell
 $ pip install git+https://github.com/konas122/DaZero.git
