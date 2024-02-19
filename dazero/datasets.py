@@ -27,7 +27,7 @@ class Dataset:
         if self.label is None:
             return self.transform(self.data[index]), None
         else:
-            return self.transform(self.data[index]),\
+            return self.transform(self.data[index]), \
                    self.target_transform(self.label[index])
 
     def __len__(self):
