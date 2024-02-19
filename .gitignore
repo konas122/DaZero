@@ -5,6 +5,9 @@
 draft/
 __pycache__/
 
+bin/
+build/
+dazero.egg-info/
 
 tanh.png
 model.png
