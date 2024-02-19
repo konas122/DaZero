@@ -206,7 +206,7 @@ class Pooling2DGrad(Function):
 
         indexes = (self.indexes.ravel()
                    + xp.arange(0, self.indexes.size * KH * KW, KH * KW))
-        
+
         gcol[indexes] = gy.ravel()
         gcol = gcol.reshape(N, C, OH, OW, KH, KW)
         gcol = xp.swapaxes(gcol, 2, 4)

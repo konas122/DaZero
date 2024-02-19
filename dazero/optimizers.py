@@ -14,19 +14,19 @@ class Optimizer:
             raise TypeError("It must be of type dazero.Model")
         self.target = target
         return self
-    
+
     def step(self):
         params = [p for p in self.target.params() if p.grad is not None]
 
         for f in self.hooks:
             f(params)
-        
+
         for param in params:
             self.step_one(param)
-    
+
     def step_one(self):
         raise NotImplementedError()
-    
+
     def add_hook(self, f):
         self.hooks.append(f)
 
@@ -35,7 +35,7 @@ class SGD(Optimizer):
     def __init__(self, model, lr=0.01):
         super().__init__(model)
         self.lr = lr
-    
+
     def step_one(self, param):
         param.data -= self.lr * param.grad.data
 
@@ -46,13 +46,13 @@ class MomentumSGD(Optimizer):
         self.lr = lr
         self.momentum = momentum
         self.vs = {}
-    
+
     def step_one(self, param):
         v_key = id(param)
         if v_key not in self.vs:
             xp = cuda.get_array_module(param.data)
             self.vs[v_key] = xp.zeros_like(param.data)
-        
+
         v = self.vs[v_key]
         v *= self.momentum
         v -= self.lr * param.grad.data
@@ -65,14 +65,14 @@ class AdaGrad(Optimizer):
         self.lr = lr
         self.eps = eps
         self.hs = {}
-    
+
     def step_one(self, param):
         xp = cuda.get_array_module(param.data)
 
         h_key = id(param)
         if h_key not in self.hs:
             self.hs[h_key] = xp.zeros_like(param.data)
-        
+
         lr = self.lr
         eps = self.eps
         grad = param.grad.data
@@ -80,7 +80,7 @@ class AdaGrad(Optimizer):
 
         h += grad * grad
         param.data -= lr * grad / (xp.sqrt(h) + eps)
-    
+
 
 class AdaDelta(Optimizer):
     def __init__(self, model, rho=0.95, eps=1e-6):
@@ -179,11 +179,11 @@ class ClipGrad:
 class FreezeParam:
     def __init__(self, *layers):
         self.freeze_params = []
-        for l in layers:
-            if isinstance(l, Parameter):
-                self.freeze_params.append(l)
+        for layer in layers:
+            if isinstance(layer, Parameter):
+                self.freeze_params.append(layer)
             else:
-                for p in l.params():
+                for p in layer.params():
                     self.freeze_params.append(p)
 
     def __call__(self, params):

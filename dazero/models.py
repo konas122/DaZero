@@ -198,7 +198,7 @@ class BottleneckA(Layer):
         # In the original MSRA ResNet, stride=2 is on 1x1 convolution.
         # In Facebook ResNet, stride=2 is on 3x3 convolution.
         stride_1x1, stride_3x3 = (1, stride) if downsample_fb else (stride, 1)
-       
+
         self.conv1 = L.Conv2d(in_channels, mid_channels, 1, stride_1x1, 0,
                               nobias=True)
         self.bn1 = L.BatchNorm()
@@ -228,7 +228,7 @@ class BottleneckB(Layer):
 
     def __init__(self, in_channels, mid_channels):
         super().__init__()
-        
+
         self.conv1 = L.Conv2d(in_channels, mid_channels, 1, 1, 0, nobias=True)
         self.bn1 = L.BatchNorm()
         self.conv2 = L.Conv2d(mid_channels, mid_channels, 3, 1, 1, nobias=True)

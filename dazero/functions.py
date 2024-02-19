@@ -100,7 +100,7 @@ class Matmul(Function):
     def forward(self, x, W):
         y = x.dot(W)
         return y
-        
+
     def backward(self, gy):
         x, W = self.inputs
         gx = matmul(gy, W.T)
@@ -118,7 +118,7 @@ class MSELoss(Function):
         diff = x0 - x1
         y = (diff ** 2).sum() / len(diff)
         return y
-    
+
     def backward(self, gy):
         x0, x1 = self.inputs
         diff = x0 - x1
@@ -185,12 +185,12 @@ class Reshape(Function):
     def __init__(self, shape):
         self.shape = shape
         self.x_shape = None
-    
+
     def forward(self, x):
         self.x_shape = x.shape
         y = x.reshape(self.shape)
         return y
-    
+
     def backward(self, gy):
         return reshape(gy, self.x_shape)
 
@@ -229,7 +229,7 @@ class Sum(Function):
         self.x_shape = x.shape
         y = x.sum(axis=self.axis, keepdims=self.keepdims)
         return y
-    
+
     def backward(self, gy):
         gy = utils.reshape_sum_backward(gy, self.x_shape, self.axis, self.keepdims)
         gx = broadcast_to(gy, self.x_shape)
@@ -264,6 +264,7 @@ def average(x, axis=None, keepdims=False):
     x = as_variable(x)
     y = sum(x, axis, keepdims)
     return y * (y.data.size / x.data.size)
+
 
 mean = average
 
@@ -312,10 +313,10 @@ class GetItemGrad(Function):
 
         np.add.at(gx, self.slices, gy)
         return gx
-    
+
     def backward(self, ggx):
         return get_item(ggx, self.slices)
-    
+
 def get_item(x, slices):
     f = GetItem(slices)
     return f(x)
@@ -430,7 +431,7 @@ class Sin(Function):
         xp = cuda.get_array_module(x)
         y = xp.sin(x)
         return y
-    
+
     def backward(self, gy):
         x, = self.inputs
         gx = gy * cos(x)
@@ -460,7 +461,7 @@ class Tanh(Function):
         xp = cuda.get_array_module(x)
         y = xp.tanh(x)
         return y
-    
+
     def backward(self, gy):
         y = self.outputs[0]()
         gx = gy * (1 - y * y)

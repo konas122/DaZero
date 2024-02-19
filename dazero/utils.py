@@ -105,13 +105,13 @@ def _dot_func(f):
     dot_func = '{} [label="{}", color=lightblue, style=filled, shape=box]\n'
     txt = dot_func.format(id(f), f.__class__.__name__)
     dot_edge = '{} -> {}\n'
-    
+
     for x in f.inputs:
         txt += dot_edge.format(id(x), id(f))
     for y in f.outputs:
         txt += dot_edge.format(id(f), id(y()))
     return txt
-    
+
 
 def get_dot_graph(output, verbose=False):
     txt = ''
@@ -122,7 +122,7 @@ def get_dot_graph(output, verbose=False):
         if f not in seen_set:
             funcs.append(f)
             seen_set.add(f)
-    
+
     add_func(output.creator)
     txt += _dot_var(output, verbose)
 
@@ -167,8 +167,10 @@ def show_progress(block_num, block_size, total_size):
     downloaded = block_num * block_size
     p = downloaded / total_size * 100
     i = int(downloaded / total_size * 30)
-    if p >= 100.0: p = 100.0
-    if i >= 30: i = 30
+    if p >= 100.0:
+        p = 100.0
+    if i >= 30:
+        i = 30
     bar = "=" * i + "." * (30 - i)
     print(bar_template.format(bar, p), end='')
 
@@ -205,7 +207,8 @@ def get_file(url, file_name=None):
     except (Exception, KeyboardInterrupt) as e:
         if os.path.exists(file_path):
             os.remove(file_path)
-        raise
+        raise e
+
     print(" Done")
 
     return file_path

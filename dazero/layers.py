@@ -70,7 +70,7 @@ class Layer:
         except (Exception, KeyboardInterrupt) as e:
             if os.path.exists(path):
                 os.remove(path)
-            raise
+            raise e
 
     def load_weights(self, path):
         npz = np.load(path)

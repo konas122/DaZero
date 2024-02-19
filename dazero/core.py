@@ -83,7 +83,6 @@ class Variable:
                 #         funcs.insert(i, f)
                 #         break
 
-
         add_func(self.creator)
 
         while funcs:

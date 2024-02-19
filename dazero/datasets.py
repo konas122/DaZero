@@ -75,7 +75,7 @@ class Spiral(Dataset):
 class MNIST(Dataset):
     def __init__(self, train=True,
                  transform=Compose([Flatten(), ToFloat(),
-                                     Normalize(0., 255.)]),
+                                    Normalize(0., 255.)]),
                  target_transform=None):
         super().__init__(train, transform, target_transform)
 
@@ -146,7 +146,6 @@ class CIFAR10(Dataset):
         self.data = self.data.reshape(-1, 3, 32, 32)
         save_cache_npz(self.data, self.label, url, self.train)
 
-
     def _load_data(self, filename, idx, data_type='train'):
         assert data_type in ['train', 'test']
         with tarfile.open(filename, 'r:gz') as file:
@@ -169,7 +168,7 @@ class CIFAR10(Dataset):
         img = np.zeros((H*row, W*col, 3))
         for r in range(row):
             for c in range(col):
-                img[r*H:(r+1)*H, c*W:(c+1)*W] = self.data[np.random.randint(0, len(self.data)-1)].reshape(3,H,W).transpose(1,2,0)/255
+                img[r*H:(r+1)*H, c*W:(c+1)*W] = self.data[np.random.randint(0, len(self.data)-1)].reshape(3, H, W).transpose(1, 2, 0)/255
         plt.imshow(img, interpolation='nearest')
         plt.axis('off')
         plt.show()
@@ -225,9 +224,28 @@ class CIFAR100(CIFAR10):
 
     @staticmethod
     def labels(label_type='fine'):
-        coarse_labels = dict(enumerate(['aquatic mammals','fish','flowers','food containers','fruit and vegetables','household electrical device','household furniture','insects','large carnivores','large man-made outdoor things','large natural outdoor scenes','large omnivores and herbivores','medium-sized mammals','non-insect invertebrates','people','reptiles','small mammals','trees','vehicles 1','vehicles 2']))
+        coarse_labels = dict(enumerate(['aquatic mammals',
+                                        'fish',
+                                        'flowers',
+                                        'food containers',
+                                        'fruit and vegetables',
+                                        'household electrical device',
+                                        'household furniture',
+                                        'insects',
+                                        'large carnivores',
+                                        'large man-made outdoor things',
+                                        'large natural outdoor scenes',
+                                        'large omnivores and herbivores',
+                                        'medium-sized mammals',
+                                        'non-insect invertebrates',
+                                        'people',
+                                        'reptiles',
+                                        'small mammals',
+                                        'trees',
+                                        'vehicles 1',
+                                        'vehicles 2']))
         fine_labels = []
-        return fine_labels if label_type is 'fine' else coarse_labels
+        return fine_labels if label_type == 'fine' else coarse_labels
 
 
 # =============================================================================

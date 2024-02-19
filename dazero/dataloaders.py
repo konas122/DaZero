@@ -62,12 +62,12 @@ class SeqDataLoader(DataLoader):
     def __init__(self, dataset, batch_size, gpu=False):
         super().__init__(dataset=dataset, batch_size=batch_size, shuffle=False, gpu=gpu)
         self.jump = self.data_size // self.batch_size
-    
+
     def __next__(self):
         if self.iteration >= self.max_iter:
             self._reset()
             raise StopIteration
-    
+
         batch_index = [(i * self.jump + self.iteration) % self.data_size for i in range(self.batch_size)]
         batch = [self.dataset[i] for i in batch_index]
 
