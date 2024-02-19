@@ -22,11 +22,11 @@ cupy (optional)
 
 ## Install
 
+* If you just only want to install the **CPU** version, you can ignore the following words and directly run the command below.
+* If you want to install the **GPU** version, you should install [CuPy](https://github.com/cupy/cupy) first, then run the command below.
+
 ```shell
 $ pip install git+https://github.com/konas122/DaZero.git
-
-# (optional)
-$ pip install cupy
 ```
 
 **Learn from** [deep-learning-from-scratch-3](https://github.com/oreilly-japan/deep-learning-from-scratch-3)

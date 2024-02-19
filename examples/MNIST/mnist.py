@@ -1,3 +1,4 @@
+import time
 
 import dazero
 from dazero import Model
@@ -49,6 +50,8 @@ if cuda.gpu_enable:
 else:
     print("Using cpu")
 
+start = time.time()
+
 for epoch in range(max_epoch):
     sum_loss, sum_acc = 0, 0
 
@@ -79,4 +82,6 @@ for epoch in range(max_epoch):
     print('\ttest  loss: {:.4f}, accuracy: {:.4f}'.format(
         sum_loss / len(test_set), sum_acc / len(test_set)))
 
-print(dazero.cuda.gpu_enable)
+end = time.time()
+print("Using GPU: ", dazero.cuda.gpu_enable)
+print("Training for ", end - start, 's', sep="")
