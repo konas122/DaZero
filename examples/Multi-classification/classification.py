@@ -2,10 +2,6 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from header import *
-
 import dazero
 from dazero import Model
 from dazero import optimizers

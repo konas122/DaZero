@@ -5,10 +5,6 @@ import numpy as np
 from PIL import Image
 import cv2
 
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from header import *
-
 import dazero
 import dazero.functions as F
 from dazero.models import VGG16
