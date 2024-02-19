@@ -44,7 +44,7 @@ class Resize:
         size (int or (int, int)): Desired output size
         mode (int): Desired interpolation.
     """
-    def __init__(self, size, mode=Image.BILINEAR):
+    def __init__(self, size, mode=Image.Resampling.BILINEAR):
         self.size = pair(size)
         self.mode = mode
 
@@ -148,5 +148,5 @@ ToFloat = AsType
 
 
 class ToInt(AsType):
-    def __init__(self, dtype=np.int):
+    def __init__(self, dtype=np.int32):
         self.dtype = dtype
