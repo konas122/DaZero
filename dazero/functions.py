@@ -468,11 +468,6 @@ class LayerNorm(Function):
             self.avg_mean = x.mean(axis=self.axis)
             self.avg_var = x.var(axis=self.axis)
 
-            m = x.size // gamma.size
-            s = m - 1. if m - 1. > 1. else 1.
-            adjust = m / s  # unbiased estimation
-            self.avg_var *= adjust
-
             for _ in range(len(self.axis)):
                 self.avg_mean = xp.expand_dims(self.avg_mean, -1)
                 self.avg_var = xp.expand_dims(self.avg_var, -1)
@@ -506,8 +501,6 @@ class LayerNorm(Function):
         gbeta = sum(gy, axis=self.axis_delta)
         ggamma = sum(xc * gy, axis=self.axis_delta)
 
-        # gx = gy - gbeta / batch_size - xc * ggamma / batch_size
-        # gx *= gamma * self.inv_std
         gx_1 = gamma * gy * self.inv_std
         gx_tmp = self.inv_std / normal_shape
         gx_2 = gx_tmp * sum(gy * gamma, axis=self.axis, keepdims=True)
@@ -517,7 +510,7 @@ class LayerNorm(Function):
         return gx, ggamma, gbeta
 
 
-def layer_norm(x, normalized_shape, gamma=None, beta=None, mean=None, var=None, eps=2e-5):
+def layer_norm(x, normalized_shape, gamma=None, beta=None, mean=None, var=None, eps=1e-5):
     xp = cuda.get_array_module(x)
     D = x.shape[1]
     if mean is None:
