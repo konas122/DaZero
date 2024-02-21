@@ -1,6 +1,7 @@
 # DaZero
 
 ![Status Badge](https://github.com/konas122/DaZero/actions/workflows/dazero_linux.yml/badge.svg?branch=main)
+![Status Badge](https://github.com/konas122/DaZero/actions/workflows/dazero_wheel.yml/badge.svg?branch=main)
 
 Deep Learning Framework from Zero
 
