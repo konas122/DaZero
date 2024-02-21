@@ -14,11 +14,12 @@ import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import dazero.layers as L
+import dazero.functions as F
 from dazero import Model, Parameter
 
 
 class Net(Model):
-    def __init__(self, normalized_shape, gamma, beta):
+    def __init__(self, normalized_shape, gamma=None, beta=None):
         super().__init__()
         self.layer = L.LayerNorm(normalized_shape, gamma=gamma, beta=beta)
     
@@ -87,3 +88,17 @@ if __name__ == "__main__":
     assert np.mean(np.abs(gamma_delta - grad_gamma_torch.cpu().detach().numpy())) < 1e-6, np.mean(np.abs(gamma_delta - grad_gamma_torch.cpu().detach().numpy()))
     assert np.mean(np.abs(beta_delta - grad_beta_torch.cpu().detach().numpy())) < 1e-6, np.mean(np.abs(beta_delta - grad_beta_torch.cpu().detach().numpy()))
     print("success")
+
+    x = Parameter(inputs)
+    output = F.layer_norm(x, normalized_shape, gamma, beta)
+    output.backward()
+    output, gx = output.data, x.grad.data
+    assert np.mean(np.abs(output - output_torch.cpu().detach().numpy())) < 1e-6, np.mean(np.abs(output - output_torch.cpu().detach().numpy()))
+    assert np.mean(np.abs(gx - gx_torch.cpu().detach().numpy())) < 1e-6, np.mean(np.abs(gx - gx_torch.cpu().detach().numpy()))
+    print("success")
+
+    x = Parameter(inputs)
+    layernorm = Net(normalized_shape)
+    output = layernorm(x)
+    delta = np.ones(inputs.shape).astype(np.float64)
+    output.backward()

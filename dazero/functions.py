@@ -513,14 +513,15 @@ class LayerNorm(Function):
 def layer_norm(x, normalized_shape, gamma=None, beta=None, mean=None, var=None, eps=1e-5):
     xp = cuda.get_array_module(x)
     D = x.shape[1]
+    S = x.shape[1:]
     if mean is None:
         mean = xp.zeros(D, dtype=x.dtype)
     if var is None:
         var = xp.ones(D, dtype=x.dtype)
     if gamma is None:
-        gamma = xp.ones(D, dtype=x.dtype)
+        gamma = xp.ones(S, dtype=x.dtype)
     if beta is None:
-        beta = xp.zeros(D, dtype=x.dtype)
+        beta = xp.zeros(S, dtype=x.dtype)
     return LayerNorm(normalized_shape, mean, var, eps)(x, gamma, beta)
 
 

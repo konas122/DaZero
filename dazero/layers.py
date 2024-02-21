@@ -254,14 +254,15 @@ class LayerNorm(Layer):
     def _init_params(self, x):
         xp = cuda.get_array_module(x)
         D = x.shape[1]
+        S = x.shape[1:]
         if self.avg_mean.data is None:
             self.avg_mean.data = xp.zeros(D, dtype=x.dtype)
         if self.avg_var.data is None:
             self.avg_var.data = xp.ones(D, dtype=x.dtype)
         if self.gamma.data is None:
-            self.gamma.data = xp.ones(D, dtype=x.dtype)
+            self.gamma.data = xp.ones(S, dtype=x.dtype)
         if self.beta.data is None:
-            self.beta.data = xp.zeros(D, dtype=x.dtype)
+            self.beta.data = xp.zeros(S, dtype=x.dtype)
 
     def __call__(self, x):
         if self.avg_mean.data is None:
