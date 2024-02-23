@@ -22,7 +22,7 @@ class Net(Model):
     def __init__(self, normalized_shape, gamma=None, beta=None):
         super().__init__()
         self.layer = L.LayerNorm(normalized_shape, gamma=gamma, beta=beta)
-    
+
     def forward(self, inputs):
         return self.layer(inputs)
 

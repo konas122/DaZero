@@ -64,7 +64,7 @@ for epoch in range(max_epoch):
         sum_acc += float(acc.data) * len(batch_t)
 
     # Print loss every epoch
-    if epoch % 10 == 0:
+    if epoch % 50 == 0:
         print('epoch: {}'.format(epoch+1))
         print('\ttrain loss: {:.4f}, accuracy: {:.4f}'.format(
             sum_loss / len(train_set), sum_acc / len(train_set)))
