@@ -98,7 +98,10 @@ def softmax(x, axis=1):
 
 class Matmul(Function):
     def forward(self, x, W):
-        y = x.dot(W)
+        if x.ndim > 3 or W.ndim > 3:
+            raise RuntimeError("Got wrong dimension tensors")
+        xp = cuda.get_array_module(x)
+        y = xp.matmul(x, W)
         return y
 
     def backward(self, gy):
@@ -108,7 +111,30 @@ class Matmul(Function):
         return gx, gW
 
 def matmul(x, W):
+    if x.ndim > 3 or W.ndim > 3:
+        raise RuntimeError("Got wrong dimension tensors")
     return Matmul()(x, W)
+
+
+class Dot(Function):
+    def forward(self, x, W):
+        f = lambda xs: (xs.ndim > 1 or xs.ndim == 2 and xs.shape[1] == 1)
+        if f(x) or f(W):
+            raise RuntimeError("1D tensors expected, but got wrong dimension tensors")
+        y = x.dot(W)
+        return y
+
+    def backward(self, gy):
+        x, W = self.inputs
+        gx = dot(gy, W.T)
+        gW = dot(x.T, gy)
+        return gx, gW
+
+def dot(x, W):
+    f = lambda xs: (xs.ndim > 1 or xs.ndim == 2 and xs.shape[1] != 1)
+    if f(x) or f(W):
+        raise RuntimeError("1D tensors expected, but got wrong dimension tensors")
+    return Dot()(x, W)
 
 
 # ============================== Loss =================================
@@ -205,7 +231,7 @@ class Transpose(Function):
         self.axes = axes
 
     def forward(self, x):
-        y = np.transpose(x)
+        y = x.transpose(self.axes)
         return y
 
     def backward(self, gy):

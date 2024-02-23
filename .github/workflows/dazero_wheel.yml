@@ -3,7 +3,7 @@ name: Build Wheel
 on:
   push:
     tags:
-      - '*'
+      - 'v0.2'
 
 jobs:
   build:

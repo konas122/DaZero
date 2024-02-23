@@ -191,7 +191,7 @@ def setup_variable():
     Variable.__getitem__ = dazero.functions.get_item
 
     Variable.matmul = dazero.functions.matmul
-    Variable.dot = dazero.functions.matmul
+    Variable.dot = dazero.functions.dot
     Variable.max = dazero.functions.max
     Variable.min = dazero.functions.min
 
@@ -239,7 +239,7 @@ class Add(Function):
 
     def backward(self, gy):
         gx0, gx1 = gy, gy
-        if self.x0_shape != self.x1_shape:  # for broadcaset
+        if self.x0_shape != self.x1_shape:  # for broadcast
             gx0 = dazero.functions.sum_to(gx0, self.x0_shape)
             gx1 = dazero.functions.sum_to(gx1, self.x1_shape)
         return gx0, gx1
