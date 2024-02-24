@@ -11,7 +11,8 @@ W = Variable(np.random.randn(2))
 y = F.dot(x, W)
 
 y.backward()
-print(x.grad.shape == x.shape)
-print(W.grad.shape == W.shape)
-print(W.data == x.grad.data)
-print(x.data == W.grad.data)
+assert x.grad.shape == x.shape
+assert W.grad.shape == W.shape
+assert np.allclose(W.data, x.grad.data, atol=1e-8) == True
+assert np.allclose(x.data, W.grad.data, atol=1e-8) == True
+print("Success")

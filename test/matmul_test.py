@@ -11,5 +11,6 @@ W = Variable(np.random.randn(3, 4))
 y = F.matmul(x, W)
 
 y.backward()
-print(x.grad.shape == x.shape)
-print(W.grad.shape == W.shape)
+assert x.grad.shape == x.shape
+assert W.grad.shape == W.shape
+print("Success")
