@@ -96,27 +96,8 @@ def softmax(x, axis=1):
 
 # ============================== Matrix ================================
 
-class Matmul(Function):
-    def forward(self, x, W):
-        if x.ndim > 3 or W.ndim > 3:
-            raise RuntimeError("Got wrong dimension tensors")
-        xp = cuda.get_array_module(x)
-        y = xp.matmul(x, W)
-        return y
-
-    def backward(self, gy):
-        x, W = self.inputs
-        gx = matmul(gy, W.T)
-        gW = matmul(x.T, gy)
-        return gx, gW
-
-def matmul(x, W):
-    if x.ndim > 3 or W.ndim > 3:
-        raise RuntimeError("Got wrong dimension tensors")
-    return Matmul()(x, W)
-
-
 class Dot(Function):
+    """Matrix multiplication for 1D tensor"""
     def forward(self, x, W):
         f = lambda xs: (xs.ndim > 1 or xs.ndim == 2 and xs.shape[1] == 1)
         if f(x) or f(W):
@@ -135,6 +116,48 @@ def dot(x, W):
     if f(x) or f(W):
         raise RuntimeError("1D tensors expected, but got wrong dimension tensors")
     return Dot()(x, W)
+
+
+class Matmul(Function):
+    """Matrix multiplication for 2D tensor"""
+    def forward(self, x, W):
+        if x.ndim > 2 or W.ndim > 2:
+            raise RuntimeError("2D tensors expected, but got wrong dimension tensors")
+        xp = cuda.get_array_module(x)
+        y = xp.matmul(x, W)
+        return y
+
+    def backward(self, gy):
+        x, W = self.inputs
+        gx = matmul(gy, W.T)
+        gW = matmul(x.T, gy)
+        return gx, gW
+
+def matmul(x, W):
+    if x.ndim > 2 or W.ndim > 2:
+        raise RuntimeError("2D tensors expected, but got wrong dimension tensors")
+    return Matmul()(x, W)
+
+
+class Bmm(Function):
+    """Matrix multiplication for 3D tensor"""
+    def forward(self, x, W):
+        if x.ndim != 3 or W.ndim != 3:
+            raise RuntimeError("3D tensors expected, but got wrong dimension tensors")
+        xp = cuda.get_array_module(x)
+        y = xp.matmul(x, W)
+        return y
+
+    def backward(self, gy):
+        x, W = self.inputs
+        gx = bmm(gy, W.transpose(0, 2, 1))
+        gW = bmm(x.transpose(0, 2, 1), gy)
+        return gx, gW
+
+def bmm(x, W):
+    if x.ndim != 3 or W.ndim != 3:
+        raise RuntimeError("3D tensors expected, but got wrong dimension tensors")
+    return Bmm()(x, W)
 
 
 # ============================== Loss =================================
