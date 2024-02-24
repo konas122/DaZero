@@ -228,6 +228,16 @@ def sigmoid_cross_entropy(x, t):
     return y
 
 
+def binary_cross_entropy(p, t):
+    if p.ndim != t.ndim:
+        t = t.reshape(*p.shape)
+    N = len(t)
+    p = clip(p, 1e-15, 0.999)
+    tlog_p = t * log(p) + (1 - t) * log(1 - p)
+    y = -1 * sum(tlog_p) / N
+    return y
+
+
 # ========================== Tensor Operation =============================
 
 class Reshape(Function):
@@ -369,6 +379,18 @@ class GetItemGrad(Function):
 def get_item(x, slices):
     f = GetItem(slices)
     return f(x)
+
+
+def expand_dims(x, axis):
+    x = as_variable(x)
+    shape = list(x.shape)
+    shape.insert(axis, 1)
+    return reshape(x, tuple(shape))
+
+
+def flatten(x):
+    """Flattens the input. Does not affect the batch size."""
+    return reshape(x, (x.shape[0], -1))
 
 
 # ========================== accuracy / dropout ============================
