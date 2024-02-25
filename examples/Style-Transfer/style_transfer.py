@@ -51,8 +51,8 @@ style_path = dazero.utils.get_file(style_url)
 content_img = Image.open(content_path)
 content_size = content_img.size
 style_img = Image.open(style_path)
-content_img = Network.preprocess(content_img, size=model_input_size)[np.newaxis]  # preprocess for VGG
-style_img = Network.preprocess(style_img, size=model_input_size)[np.newaxis]
+content_img = Network.img_preprocess(content_img, size=model_input_size)[np.newaxis]  # preprocess for VGG
+style_img = Network.img_preprocess(style_img, size=model_input_size)[np.newaxis]
 content_img, style_img = Variable(content_img), Variable(style_img)
 
 model = Network(pretrained=True)
@@ -61,7 +61,7 @@ gen_data = content_img.data.copy()
 gen_img = dazero.Parameter(gen_data)
 gen_model = dazero.models.Model()
 gen_model.param = gen_img
-optimizer = dazero.optimizers.AdaGrad(lr=lr).setup(gen_model)
+optimizer = dazero.optimizers.AdaGrad(gen_model, lr=lr)
 
 if use_gpu:
     model.to_gpu()
@@ -104,11 +104,11 @@ def style_loss(style, comb):
     S = gram_mat(style)
     C = gram_mat(comb)
     N, ch, H, W = style.shape
-    return F.mean_squared_error(S, C) / (4 * (ch * W * H)**2)
+    return F.mse_loss(S, C) / (4 * (ch * W * H)**2)
 
 
 def content_loss(base, comb):
-    return F.mean_squared_error(base, comb) / 2
+    return F.mse_loss(base, comb) / 2
 
 
 def total_varitaion_loss(x):
@@ -135,13 +135,13 @@ def loss_func(gen_features, content_features, style_features, gen_img):
 start = time.time()
 print_interval = 100 if use_gpu else 1
 for i in range(iterations):
-    model.cleargrads()
-    gen_img.cleargrad()
+    model.zero_grad()
+    gen_img.zero_grad()
 
     gen_features = model.extract(gen_img)
     loss = loss_func(gen_features, content_features, style_features, gen_img)
     loss.backward()
-    optimizer.update()
+    optimizer.step()
 
     if i % print_interval == 0:
         print('{} loss: {:.0f}'.format(i, float(loss.data)))
