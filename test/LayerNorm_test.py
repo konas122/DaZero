@@ -102,3 +102,4 @@ if __name__ == "__main__":
     output = layernorm(x)
     delta = np.ones(inputs.shape).astype(np.float64)
     output.backward()
+    print("success")
