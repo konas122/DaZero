@@ -18,7 +18,6 @@ import dazero.cuda
 import dazero.utils
 import dazero.layers
 import dazero.functions
-import dazero.functions_conv
 import dazero.optimizers
 import dazero.datasets
 import dazero.dataloaders

@@ -31,4 +31,6 @@ cupy (optional)
 $ pip install git+https://github.com/konas122/DaZero.git@v0.2
 ```
 
-**Learn from** [deep-learning-from-scratch-3](https://github.com/oreilly-japan/deep-learning-from-scratch-3)
+## References
+
+* [deep-learning-from-scratch-3](https://github.com/oreilly-japan/deep-learning-from-scratch-3)
