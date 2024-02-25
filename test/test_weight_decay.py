@@ -9,7 +9,7 @@ from dazero.utils import array_allclose
 class Layer(Model):
     def __init__(self):
         super().__init__()
-        self.layer = dazero.layers.Linear(in_size=2, out_size=3, nobias=True)
+        self.layer = dazero.layers.Linear(in_size=2, out_size=3, bias=False)
     
     def forward(self, inputs):
         return self.layer(inputs)

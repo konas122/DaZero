@@ -68,7 +68,7 @@ for epoch in range(max_epoch):
         print('epoch: {}'.format(epoch+1))
         print('\ttrain loss: {:.4f}, accuracy: {:.4f}'.format(
             sum_loss / len(train_set), sum_acc / len(train_set)))
-    
+
         sum_loss, sum_acc = 0, 0
         with dazero.no_grad():
             for x, t in test_loader:

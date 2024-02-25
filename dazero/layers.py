@@ -109,20 +109,19 @@ class AvgPool2d(Layer):
 # =============================================================================
 
 class Linear(Layer):
-    def __init__(self, in_size=None, out_size=None, nobias=False, dtype=np.float32):
+    def __init__(self, in_size=None, out_size=None, bias=True, dtype=np.float32):
         super().__init__()
         self.in_size = in_size
         self.out_size = out_size
-        self.nobias = nobias
         self.dtype = dtype
 
         self.W = Parameter(None, name='W')
         self._init_W()
 
-        if nobias:
-            self.b = None
-        else:
+        if bias:
             self.b = Parameter(np.zeros(out_size, dtype=dtype), name='b')
+        else:
+            self.b = None
 
     def _init_W(self):
         I, O = self.in_size, self.out_size
@@ -136,7 +135,7 @@ class Linear(Layer):
 
 class Conv2d(Layer):
     def __init__(self, in_channels, out_channels, kernel_size,
-                 stride=1, pad=0, nobias=False, dtype=np.float32):
+                 stride=1, pad=0, bias=True, dtype=np.float32):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -148,10 +147,10 @@ class Conv2d(Layer):
         self.W = Parameter(None, name='W')
         self._init_W()
 
-        if nobias:
-            self.b = None
-        else:
+        if bias:
             self.b = Parameter(np.zeros(out_channels, dtype=dtype), name='b')
+        else:
+            self.b = None
 
     def _init_W(self):
         C, OC = self.in_channels, self.out_channels
@@ -167,7 +166,7 @@ class Conv2d(Layer):
 
 class Deconv2d(Layer):
     def __init__(self, in_channels, out_channels, kernel_size,
-                 stride=1, pad=0, nobias=False, dtype=np.float32):
+                 stride=1, pad=0, bias=True, dtype=np.float32):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -179,10 +178,10 @@ class Deconv2d(Layer):
         self.W = Parameter(None, name='W')
         self._init_W()
 
-        if nobias:
-            self.b = None
-        else:
+        if bias:
             self.b = Parameter(np.zeros(out_channels, dtype=dtype), name='b')
+        else:
+            self.b = None
 
     def _init_W(self):
         C, OC = self.in_channels, self.out_channels
@@ -278,7 +277,7 @@ class RNN(Layer):
     def __init__(self, in_size, hidden_size):
         super().__init__()
         self.x2h = Linear(in_size,     hidden_size)
-        self.h2h = Linear(hidden_size, hidden_size, nobias=True)
+        self.h2h = Linear(hidden_size, hidden_size, bias=False)
         self.h = None   # h_{t-1}
 
     def reset_state(self):
@@ -303,10 +302,10 @@ class LSTM(Layer):
         self.x2o = Linear(I, H)
         self.x2u = Linear(I, H)
 
-        self.h2f = Linear(H, H, nobias=True)
-        self.h2i = Linear(H, H, nobias=True)
-        self.h2o = Linear(H, H, nobias=True)
-        self.h2u = Linear(H, H, nobias=True)
+        self.h2f = Linear(H, H, bias=False)
+        self.h2i = Linear(H, H, bias=False)
+        self.h2o = Linear(H, H, bias=False)
+        self.h2u = Linear(H, H, bias=False)
 
         self.reset_state()
 

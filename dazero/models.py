@@ -200,15 +200,15 @@ class BottleneckA(Layer):
         stride_1x1, stride_3x3 = (1, stride) if downsample_fb else (stride, 1)
 
         self.conv1 = L.Conv2d(in_channels, mid_channels, 1, stride_1x1, 0,
-                              nobias=True)
+                              bias=False)
         self.bn1 = L.BatchNorm2d()
         self.conv2 = L.Conv2d(mid_channels, mid_channels, 3, stride_3x3, 1,
-                              nobias=True)
+                              bias=False)
         self.bn2 = L.BatchNorm2d()
-        self.conv3 = L.Conv2d(mid_channels, out_channels, 1, 1, 0, nobias=True)
+        self.conv3 = L.Conv2d(mid_channels, out_channels, 1, 1, 0, bias=False)
         self.bn3 = L.BatchNorm2d()
         self.conv4 = L.Conv2d(out_channels, out_channels, 1, stride, 0,
-                              nobias=True)
+                              bias=False)
         self.bn4 = L.BatchNorm2d()
 
     def forward(self, x):
@@ -229,11 +229,11 @@ class BottleneckB(Layer):
     def __init__(self, in_channels, mid_channels):
         super().__init__()
 
-        self.conv1 = L.Conv2d(in_channels, mid_channels, 1, 1, 0, nobias=True)
+        self.conv1 = L.Conv2d(in_channels, mid_channels, 1, 1, 0, bias=False)
         self.bn1 = L.BatchNorm2d()
-        self.conv2 = L.Conv2d(mid_channels, mid_channels, 3, 1, 1, nobias=True)
+        self.conv2 = L.Conv2d(mid_channels, mid_channels, 3, 1, 1, bias=False)
         self.bn2 = L.BatchNorm2d()
-        self.conv3 = L.Conv2d(mid_channels, in_channels, 1, 1, 0, nobias=True)
+        self.conv3 = L.Conv2d(mid_channels, in_channels, 1, 1, 0, bias=False)
         self.bn3 = L.BatchNorm2d()
 
     def forward(self, x):

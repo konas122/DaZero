@@ -113,7 +113,7 @@ def show_digits(epoch=0):
                 x_decoded.data = dazero.cuda.as_numpy(x_decoded.data)
             digit = x_decoded.data.reshape(digit_size, digit_size)
             figure[i * digit_size: (i + 1) * digit_size,
-            j * digit_size: (j + 1) * digit_size] = digit
+                   j * digit_size: (j + 1) * digit_size] = digit
 
     plt.figure(figsize=(10, 10))
     plt.axis('off')
