@@ -2,7 +2,7 @@ import os
 try:
     import torch
 except ImportError:
-    os._exit(0)
+    os._exit(1)
 import numpy as np
 from torch import nn
 import torch.nn.functional as F

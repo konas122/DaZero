@@ -10,7 +10,7 @@ class SelfAttention(Layer):
 
         if dim % heads != 0:
             raise RuntimeError("input vector size must be an integer multiple of heads")
-        
+
         self.dim, self.heads = dim, heads
 
         # Compute the queries, keys and values for all heads
@@ -20,7 +20,7 @@ class SelfAttention(Layer):
 
         # This will be applied after the multi-head self-attention operation.
         self.unifyHeads = Linear(dim, dim)
-    
+
     def forward(self, x):
         b, t, k = x.shape
         h = self.heads
