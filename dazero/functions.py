@@ -384,7 +384,7 @@ class GetItemGrad(Function):
         if xp is np:
             np.add.at(gx, self.slices, gy)
         else:
-            xp.scatter_add(gx, self.slices, gy)
+            xp.add.at(gx, self.slices, gy)
         return gx
 
     def backward(self, ggx):
