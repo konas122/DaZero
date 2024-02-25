@@ -24,6 +24,8 @@ import dazero.datasets
 import dazero.dataloaders
 import dazero.transforms
 
+import dazero.transformers
+
 setup_variable()
 
 __version__ = '0.2'

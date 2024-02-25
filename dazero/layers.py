@@ -333,3 +333,8 @@ class LSTM(Layer):
 
         self.h, self.c = h_new, c_new
         return h_new
+
+
+# ==========================================================================
+
+from dazero.transformers import SelfAttention
