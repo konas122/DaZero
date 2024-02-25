@@ -18,7 +18,13 @@ class Linear(Function):
         x, W, b = self.inputs
         gb = None if b.data is None else sum_to(gy, b.shape)
         gx = matmul(gy, W.T)
-        gW = matmul(x.T, gy)
+
+        axis = np.arange(x.ndim)
+        i, j = x.ndim - 2, x.ndim - 1
+        axis[i], axis[j] = axis[j], axis[i]
+        x_T = x.transpose(*axis)
+
+        gW = matmul(x_T, gy)
         return gx, gW, gb
 
 def linear(x, W, b=None):
@@ -119,10 +125,10 @@ def dot(x, W):
 
 
 class Matmul(Function):
-    """Matrix multiplication for 2D tensor"""
+    """Matrix multiplication for 2D and 3D tensor"""
     def forward(self, x, W):
-        if x.ndim > 2 or W.ndim > 2:
-            raise RuntimeError("2D tensors expected, but got wrong dimension tensors")
+        if x.ndim < 2 or W.ndim < 2:
+            raise RuntimeError("Got wrong dimension tensors")
         xp = cuda.get_array_module(x)
         y = xp.matmul(x, W)
         return y
@@ -130,12 +136,18 @@ class Matmul(Function):
     def backward(self, gy):
         x, W = self.inputs
         gx = matmul(gy, W.T)
-        gW = matmul(x.T, gy)
+
+        axis = np.arange(x.ndim)
+        i, j = x.ndim - 2, x.ndim - 1
+        axis[i], axis[j] = axis[j], axis[i]
+        x_T = x.transpose(*axis)
+
+        gW = matmul(x_T, gy)
         return gx, gW
 
 def matmul(x, W):
-    if x.ndim > 2 or W.ndim > 2:
-        raise RuntimeError("2D tensors expected, but got wrong dimension tensors")
+    if x.ndim < 2 or W.ndim < 2:
+        raise RuntimeError("Got wrong dimension tensors")
     return Matmul()(x, W)
 
 

@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 
 import dazero.functions as F
 from dazero.layers import Layer, Linear

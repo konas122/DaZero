@@ -7,7 +7,7 @@ import numpy as np
 from torch import nn
 import torch.nn.functional as F
 
-from dazero import transformers, Parameter
+from dazero import transformers, Parameter, Variable
 
 
 class SelfAttention(nn.Module):
@@ -56,10 +56,11 @@ class SelfAttention(nn.Module):
 
 
 x = np.random.randn(10, 3, 4).astype(np.float32)
-x_torch = torch.from_numpy(x)
+x_torch = torch.from_numpy(x).requires_grad_()
 model_torch = SelfAttention(4)
 
 model = transformers.SelfAttention(4)
+res_torch = model_torch(x_torch)
 
 model.toKeys.W.data = model_torch.tokeys.weight.T.detach().numpy()
 model.toQueries.W.data = model_torch.toqueries.weight.T.detach().numpy()
@@ -68,5 +69,13 @@ model.unifyHeads.W.data = model_torch.unifyheads.weight.T.detach().numpy()
 model.unifyHeads.b.data = model_torch.unifyheads.bias.detach().numpy()
 
 x = Parameter(x)
-assert np.allclose(model(x).data, model_torch(x_torch).detach().numpy(), atol=1e-7) == True
+res = model(x)
+assert np.allclose(res.data, res_torch.detach().numpy(), atol=1e-7) == True
+
+grad = np.random.randn(*res.shape)
+res.grad = Variable(grad)
+res.backward()
+res_torch.backward(torch.from_numpy(grad))
+assert np.allclose(x.grad.data, x_torch.grad.detach().numpy(), atol=1e-7) == True
+
 print("Success")
