@@ -1,6 +1,8 @@
+import time
 import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
+
 import dazero
 import dazero.functions as F
 import dazero.layers as L
@@ -82,7 +84,7 @@ class VAE(Model):
         z_mean, z_log_var = self.encoder(x)
 
         rec_loss = 0
-        for l in range(k):
+        for _ in range(k):
             z = self.encoder.sampling(z_mean, z_log_var)
             y = self.decoder(z)
             rec_loss += F.binary_cross_entropy(F.flatten(y), F.flatten(x)) / k
@@ -131,9 +133,12 @@ if use_gpu:
     vae.to_gpu()
     train_loader.to_gpu()
     xp = dazero.cuda.cupy
+    print("Using GPU")
 else:
     xp = np
+    print("Using CPU")
 
+start = time.time()
 for epoch in range(max_epoch):
     avg_loss = 0
     cnt = 0
@@ -154,3 +159,7 @@ for epoch in range(max_epoch):
                                                        float(avg_loss/cnt)))
 
     show_digits(epoch)
+
+end = time.time()
+print("Using GPU: ", dazero.cuda.gpu_enable)
+print("Training for ", end - start, 's', sep="")
