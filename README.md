@@ -20,6 +20,7 @@ graphviz
 numpy
 matplotlib
 cupy (optional)
+urllib3
 ```
 
 ## Install
