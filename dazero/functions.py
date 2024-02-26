@@ -100,6 +100,29 @@ def softmax(x, axis=1):
     return Softmax(axis)(x)
 
 
+class LogSoftmax(Function):
+    def __init__(self, axis=1):
+        self.axis = axis
+
+    def forward(self, x):
+        xp = cuda.get_array_module(x)
+        y1 = x - x.max(axis=self.axis, keepdims=True)
+        y2 = xp.exp(y1)
+        y2 = y2.sum(axis=self.axis, keepdims=True)
+        y2 = xp.log(y2)
+        y = y1 - y2
+        return y
+
+    def backward(self, gy):
+        x = self.inputs[0]
+        gx = Variable(np.ones_like(x)) - softmax(x, self.axis)
+        gx *= gy
+        return gx
+
+def log_softmax(x, axis=1):
+    return LogSoftmax(axis)(x)
+
+
 # ============================== Matrix ================================
 
 class Dot(Function):

@@ -126,5 +126,4 @@ class Transformer(dazero.Model):
 
         # Average-pool over the t dimension and project to class probabilities
         x = self.toprobs(x.mean(axis=1))
-        x = F.softmax(x, axis=1)
-        return F.log(x)
+        x = F.log_softmax(x, axis=1)
