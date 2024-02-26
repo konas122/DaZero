@@ -361,6 +361,8 @@ def sum_to(x, shape):
 
 class GetItem(Function):
     def __init__(self, slices):
+        if isinstance(slices, Variable):
+            slices = slices.data
         self.slices = slices
 
     def forward(self, x):
