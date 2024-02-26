@@ -115,7 +115,8 @@ class LogSoftmax(Function):
 
     def backward(self, gy):
         x = self.inputs[0]
-        gx = Variable(np.ones_like(x)) - softmax(x, self.axis)
+        xp = cuda.get_array_module(gy)
+        gx = Variable(xp.ones_like(x)) - softmax(x, self.axis)
         gx *= gy
         return gx
 
