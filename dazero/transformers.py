@@ -1,6 +1,5 @@
-import numpy as np
-
 import dazero
+from dazero import cuda
 import dazero.functions as F
 from dazero.layers import Linear, LayerNorm, Embedding
 
@@ -8,8 +7,9 @@ from dazero.layers import Linear, LayerNorm, Embedding
 def mask_(matrices, val=0.0):
     h, w = matrices.shape[-2], matrices.shape[-1]
     assert h == w
+    xp = cuda.get_array_module(matrices)
     for i in range(matrices.shape[0]):
-        tril_indices = np.triu_indices(h, k=1)
+        tril_indices = xp.triu_indices(h, k=1)
         matrices.data[i][tril_indices] = val
 
 
@@ -116,7 +116,8 @@ class Transformer(dazero.Model):
         b, t, k = tokens.shape
 
         # generate position embeddings
-        positions = np.arange(t)
+        xp = cuda.get_array_module(x)
+        positions = xp.arange(t)
         positions = self.pos_emb(positions)
         positions = F.broadcast_to(positions, (b, t, k))
 
