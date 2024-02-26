@@ -284,10 +284,10 @@ class SinCurve(Dataset):
         self.label = y[1:][:, np.newaxis]
 
 
-class Shakespear(Dataset):
+class Shakespeare(Dataset):
     def prepare(self):
         url = 'https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt'
-        file_name = 'shakespear.txt'
+        file_name = 'shakespeare.txt'
         path = get_file(url, file_name)
         with open(path, 'r') as f:
             data = f.read()

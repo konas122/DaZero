@@ -336,7 +336,6 @@ def average(x, axis=None, keepdims=False):
     y = sum(x, axis, keepdims)
     return y * (y.data.size / x.data.size)
 
-
 mean = average
 
 
@@ -519,7 +518,7 @@ def batch_norm(x, gamma=None, beta=None, mean=None, var=None, decay=0.9, eps=2e-
     return BatchNorm2d(mean, var, decay, eps)(x, gamma, beta)
 
 
-def embed_id(x, W):
+def embedding(x, W):
     return W[x]
 
 

@@ -194,6 +194,7 @@ def setup_variable():
     Variable.dot = dazero.functions.dot
     Variable.max = dazero.functions.max
     Variable.min = dazero.functions.min
+    Variable.mean = dazero.functions.mean
 
 
 class Parameter(Variable):

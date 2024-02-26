@@ -196,10 +196,10 @@ class Deconv2d(Layer):
 
 
 # =============================================================================
-# EmbedID / BatchNorm2d / LayerNorm
+# Embedding / BatchNorm2d / LayerNorm
 # =============================================================================
 
-class EmbedID(Layer):
+class Embedding(Layer):
     def __init__(self, in_size, out_size):
         super().__init__()
         self.W = Parameter(np.random.randn(in_size, out_size), name='W')
@@ -333,8 +333,3 @@ class LSTM(Layer):
 
         self.h, self.c = h_new, c_new
         return h_new
-
-
-# ==========================================================================
-
-from dazero.transformers import SelfAttention
