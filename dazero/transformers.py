@@ -7,8 +7,10 @@ from dazero.layers import Linear, LayerNorm, Embedding
 
 def mask_(matrices, val=0.0):
     h, w = matrices.shape[-2], matrices.shape[-1]
-    indices = np.tril_indices(h, w)
-    matrices[..., indices[0], indices[1]] = val
+    assert h == w
+    for i in range(matrices.shape[0]):
+        tril_indices = np.triu_indices(h, k=1)
+        matrices.data[i][tril_indices] = val
 
 
 class SelfAttention(dazero.Layer):
@@ -53,6 +55,7 @@ class SelfAttention(dazero.Layer):
         dot = F.bmm(queries, keys.transpose(0, 2, 1))
         dot = dot / (k ** (1/2))
 
+        # mask out the upper half of the dot matrix, excluding the diagonal
         if self.mask:
             mask_(dot, val=float('-inf'))
 
@@ -67,17 +70,18 @@ class SelfAttention(dazero.Layer):
 
 
 class TransformerBlock(dazero.Layer):
-    def __init__(self, dim, heads):
+    def __init__(self, dim, heads, mask, ffn_hidden_mult=4, dropout=0.0):
         super().__init__()
-        self.attention = SelfAttention(dim, heads=heads)
+        self.dropout = dropout
 
+        self.attention = SelfAttention(dim, heads=heads, mask=mask)
         self.norm1 = LayerNorm(dim)
         self.norm2 = LayerNorm(dim)
 
         self.ffn = dazero.models.Sequential(
-            Linear(dim, 4 * dim),
+            Linear(dim, ffn_hidden_mult * dim),
             F.ReLU(),
-            Linear(4 * dim, dim)
+            Linear(ffn_hidden_mult * dim, dim)
         )
     
     def forward(self, x):
@@ -85,7 +89,9 @@ class TransformerBlock(dazero.Layer):
         x = self.norm1(attended + x)
 
         fedforward = self.ffn(x)
-        return self.norm2(fedforward + x)
+        x = self.norm2(fedforward + x)
+        x = F.dropout(x, dropout_ratio=self.dropout)
+        return x
 
 
 class Transformer(dazero.Model):
