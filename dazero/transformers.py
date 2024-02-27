@@ -83,7 +83,7 @@ class TransformerBlock(dazero.Layer):
             F.ReLU(),
             Linear(ffn_hidden_mult * dim, dim)
         )
-    
+
     def forward(self, x):
         attended = self.attention(x)
         x = self.norm1(attended + x)

@@ -209,7 +209,7 @@ def logsumexp(x, axis=1):
     s = y.sum(axis=axis, keepdims=True)
     xp.log(s, out=s)
     m += s
-    return m
+    return m, xp
 
 
 def max_backward_shape(x, axis):
