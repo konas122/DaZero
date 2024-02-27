@@ -26,6 +26,10 @@
 
 <img src="./assets/style_transfer.gif" style="width:400px" />
 
+## GAN
+
+<img src="./assets/gan.gif" style="width:600px" />
+
 ## VAE
 
 <img src="./assets/vae.gif" style="width:600px" />
