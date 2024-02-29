@@ -266,6 +266,26 @@ def softmax_cross_entropy(x, t):
     return SoftmaxCrossEntropy()(x, t)
 
 
+def nll_loss(x, t, reduction="mean"):
+    if isinstance(t, Variable):
+        t = t.data
+    xp = cuda.get_array_module(x.data)
+    if len(t.shape) == 2:
+        x = x.transpose(0, 2, 1)
+        x = x.reshape(-1, x.shape[2])
+        t = t.ravel()
+    b = x.shape[0]
+    slice = (xp.arange(b), t)
+    diff = -x[slice]
+    if reduction == "mean":
+        diff = diff.mean()
+    elif reduction == "sum":
+        diff = diff.sum()
+    else:
+        raise RuntimeError('Error reduction: {}'.format(reduction))
+    return diff
+
+
 def sigmoid_cross_entropy(x, t):
     if x.ndim != t.ndim:
         t = t.reshape(*x.shape)
