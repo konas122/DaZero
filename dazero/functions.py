@@ -440,10 +440,7 @@ class GetItemGrad(Function):
     def forward(self, gy):
         xp = cuda.get_array_module(gy)
         gx = xp.zeros(self.in_shape, dtype=gy.dtype)
-        if xp is np:
-            np.add.at(gx, self.slices, gy)
-        else:
-            xp.add.at(gx, self.slices, gy)
+        xp.add.at(gx, self.slices, gy)
         return gx
 
     def backward(self, ggx):
