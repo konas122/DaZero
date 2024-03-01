@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from dazero import Parameter
+from dazero import Tensor
 import dazero.functions as F
 
 lr = 0.1
@@ -25,10 +25,10 @@ if __name__ == "__main__":
     # plt.scatter(x, y)
     # plt.show()
 
-    x, y = Parameter(x), Parameter(y)
+    x, y = Tensor(x), Tensor(y)
 
-    W = Parameter(np.random.randn(1, 1))
-    b = Parameter(np.random.randn(1))
+    W = Tensor(np.random.randn(1, 1))
+    b = Tensor(np.random.randn(1))
 
     for i in range(iters):
         y_hat = predict(x, W, b)

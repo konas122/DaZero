@@ -9,13 +9,9 @@ except ImportError:
     print('To test this, you should install `PyTorch` first')
     os._exit(0)
 
-
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import dazero.layers as L
 import dazero.functions as F
-from dazero import Model, Parameter
+from dazero import Model, Tensor
 
 
 class Net(Model):
@@ -66,7 +62,7 @@ if __name__ == "__main__":
     gamma = np.random.rand(100, 30, 30).astype(np.float64)
     beta = np.random.rand(100, 30, 30).astype(np.float64)
 
-    x = Parameter(inputs)
+    x = Tensor(inputs)
     layernorm = Net(normalized_shape, gamma=gamma, beta=beta)
     output = layernorm(x)
     delta = np.ones(inputs.shape).astype(np.float64)
@@ -89,7 +85,7 @@ if __name__ == "__main__":
     assert np.mean(np.abs(beta_delta - grad_beta_torch.cpu().detach().numpy())) < 1e-6, np.mean(np.abs(beta_delta - grad_beta_torch.cpu().detach().numpy()))
     print("success")
 
-    x = Parameter(inputs)
+    x = Tensor(inputs)
     output = F.layer_norm(x, normalized_shape, gamma, beta)
     output.backward()
     output, gx = output.data, x.grad.data
@@ -97,7 +93,7 @@ if __name__ == "__main__":
     assert np.mean(np.abs(gx - gx_torch.cpu().detach().numpy())) < 1e-6, np.mean(np.abs(gx - gx_torch.cpu().detach().numpy()))
     print("success")
 
-    x = Parameter(inputs)
+    x = Tensor(inputs)
     layernorm = Net(normalized_shape)
     output = layernorm(x)
     delta = np.ones(inputs.shape).astype(np.float64)

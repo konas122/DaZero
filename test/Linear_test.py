@@ -1,10 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-from dazero import Variable
 from dazero import Model
 import dazero.layers as L
 import dazero.functions as F

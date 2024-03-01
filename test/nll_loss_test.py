@@ -7,7 +7,7 @@ import numpy as np
 import torch.nn.functional as F
 
 import dazero.functions as D
-from dazero import Parameter
+from dazero import Tensor
 
 
 b = 2
@@ -18,11 +18,11 @@ dim = 5
 
 x = np.random.randn(n, dim)
 x_torch = torch.from_numpy(x).requires_grad_()
-x = Parameter(x)
+x = Tensor(x)
 
 target = np.random.randint(0, n, size=(n))
 target_torch = torch.from_numpy(target)
-target = Parameter(target)
+target = Tensor(target)
 
 y = D.nll_loss(x, target.data)
 y_torch = F.nll_loss(x_torch, target_torch.long())
@@ -32,7 +32,6 @@ y_torch.backward()
 
 assert np.allclose(y.data, y_torch.detach().numpy(), atol=1e-8)
 assert np.allclose(x.grad.data, x_torch.grad.numpy(), atol=1e-8)
-
 
 # =========================== reduction='sum' =============================
 
@@ -49,11 +48,11 @@ assert np.allclose(x.grad.data, x_torch.grad.numpy(), atol=1e-8)
 
 x = np.random.randn(b, n, dim)
 x_torch = torch.from_numpy(x).requires_grad_()
-x = Parameter(x)
+x = Tensor(x)
 
 target = np.random.randint(0, n, size=(b, dim))
 target_torch = torch.from_numpy(target)
-target = Parameter(target)
+target = Tensor(target)
 
 y = D.nll_loss(x, target.data )
 y_torch = F.nll_loss(x_torch, target_torch.long())

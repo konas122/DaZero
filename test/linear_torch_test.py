@@ -8,16 +8,16 @@ except ImportError:
 import numpy as np
 import dazero.functions as D
 import torch.nn.functional as F
-from dazero import Parameter, Variable
+from dazero import Tensor, Variable
 
 
 x = np.random.randn(2, 3, 4).astype(np.float32)
 x_torch = torch.from_numpy(x).requires_grad_()
-x = Parameter(x)
+x = Tensor(x)
 
 W = np.random.randn(4, 3).astype(np.float32)
 W_torch = torch.from_numpy(W).requires_grad_()
-W = Parameter(W)
+W = Tensor(W)
 
 res = D.linear(x, W, None)
 res_torch = F.linear(x_torch, W_torch.T, None)

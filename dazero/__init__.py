@@ -1,5 +1,5 @@
 from dazero.core import Variable
-from dazero.core import Parameter
+from dazero.core import Tensor
 from dazero.core import Function
 from dazero.core import using_config
 from dazero.core import no_grad

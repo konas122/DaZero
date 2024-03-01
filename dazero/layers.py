@@ -5,7 +5,7 @@ import numpy as np
 from dazero import cuda
 import dazero.functions as F
 from dazero.utils import pair
-from dazero.core import Parameter
+from dazero.core import Tensor
 
 
 class Layer:
@@ -13,7 +13,7 @@ class Layer:
         self._params = set()
 
     def __setattr__(self, name, value):
-        if isinstance(value, (Parameter, Layer)):
+        if isinstance(value, (Tensor, Layer)):
             self._params.add(name)
         super().__setattr__(name, value)
 
@@ -115,11 +115,11 @@ class Linear(Layer):
         self.out_size = out_size
         self.dtype = dtype
 
-        self.W = Parameter(None, name='W')
+        self.W = Tensor(None, name='W')
         self._init_W()
 
         if bias:
-            self.b = Parameter(np.zeros(out_size, dtype=dtype), name='b')
+            self.b = Tensor(np.zeros(out_size, dtype=dtype), name='b')
         else:
             self.b = None
 
@@ -144,11 +144,11 @@ class Conv2d(Layer):
         self.pad = pad
         self.dtype = dtype
 
-        self.W = Parameter(None, name='W')
+        self.W = Tensor(None, name='W')
         self._init_W()
 
         if bias:
-            self.b = Parameter(np.zeros(out_channels, dtype=dtype), name='b')
+            self.b = Tensor(np.zeros(out_channels, dtype=dtype), name='b')
         else:
             self.b = None
 
@@ -175,11 +175,11 @@ class Deconv2d(Layer):
         self.pad = pad
         self.dtype = dtype
 
-        self.W = Parameter(None, name='W')
+        self.W = Tensor(None, name='W')
         self._init_W()
 
         if bias:
-            self.b = Parameter(np.zeros(out_channels, dtype=dtype), name='b')
+            self.b = Tensor(np.zeros(out_channels, dtype=dtype), name='b')
         else:
             self.b = None
 
@@ -202,7 +202,7 @@ class Deconv2d(Layer):
 class Embedding(Layer):
     def __init__(self, in_size, out_size):
         super().__init__()
-        self.W = Parameter(np.random.randn(in_size, out_size), name='W')
+        self.W = Tensor(np.random.randn(in_size, out_size), name='W')
 
     def __call__(self, x):
         y = self.W[x]
@@ -212,13 +212,13 @@ class Embedding(Layer):
 class BatchNorm2d(Layer):
     def __init__(self):
         super().__init__()
-        # `.avg_mean` and `.avg_var` are `Parameter` objects, so they will be
+        # `.avg_mean` and `.avg_var` are `Tensor` objects, so they will be
         # saved to a file (using `save_weights()`).
         # But they don't need grads, so they're just used as `ndarray`.
-        self.avg_mean = Parameter(None, name='avg_mean')
-        self.avg_var = Parameter(None, name='avg_var')
-        self.gamma = Parameter(None, name='gamma')
-        self.beta = Parameter(None, name='beta')
+        self.avg_mean = Tensor(None, name='avg_mean')
+        self.avg_var = Tensor(None, name='avg_var')
+        self.gamma = Tensor(None, name='gamma')
+        self.beta = Tensor(None, name='beta')
 
     def _init_params(self, x):
         xp = cuda.get_array_module(x)
@@ -242,13 +242,13 @@ class LayerNorm(Layer):
     def __init__(self, normalized_shape, gamma=None, beta=None):
         super().__init__()
         self.normalized_shape = normalized_shape
-        # `.avg_mean` and `.avg_var` are `Parameter` objects, so they will be
+        # `.avg_mean` and `.avg_var` are `Tensor` objects, so they will be
         # saved to a file (using `save_weights()`).
         # But they don't need grads, so they're just used as `ndarray`.
-        self.avg_mean = Parameter(None, name='avg_mean')
-        self.avg_var = Parameter(None, name='avg_var')
-        self.gamma = Parameter(gamma, name='gamma')
-        self.beta = Parameter(beta, name='beta')
+        self.avg_mean = Tensor(None, name='avg_mean')
+        self.avg_var = Tensor(None, name='avg_var')
+        self.gamma = Tensor(gamma, name='gamma')
+        self.beta = Tensor(beta, name='beta')
 
     def _init_params(self, x):
         xp = cuda.get_array_module(x)

@@ -1,6 +1,6 @@
 import math
 
-from dazero import Model, Parameter, cuda
+from dazero import Model, Tensor, cuda
 
 
 class Optimizer:
@@ -180,7 +180,7 @@ class FreezeParam:
     def __init__(self, *layers):
         self.freeze_params = []
         for layer in layers:
-            if isinstance(layer, Parameter):
+            if isinstance(layer, Tensor):
                 self.freeze_params.append(layer)
             else:
                 for p in layer.params():

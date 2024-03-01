@@ -6,9 +6,7 @@ try:
 except ImportError:
     os._exit(0)
 
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from dazero import Parameter
+from dazero import Tensor
 import dazero.functions as F
 
 
@@ -21,8 +19,8 @@ mat2 = np.random.randn(2, 4, 5)
 input_torch, mat2_torch = torch.from_numpy(input).requires_grad_(), torch.from_numpy(mat2).requires_grad_()
 res_torch = torch.bmm(input_torch, mat2_torch)
 
-input = Parameter(input)
-mat2 = Parameter(mat2)
+input = Tensor(input)
+mat2 = Tensor(mat2)
 res = F.bmm(input, mat2)
 assert np.allclose(res.data, res_torch.detach().numpy(), atol=1e-9) == True
 

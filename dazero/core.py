@@ -197,7 +197,7 @@ def setup_variable():
     Variable.mean = dazero.functions.mean
 
 
-class Parameter(Variable):
+class Tensor(Variable):
     pass
 
 

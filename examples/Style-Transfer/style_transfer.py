@@ -58,7 +58,7 @@ content_img, style_img = Variable(content_img), Variable(style_img)
 model = Network(pretrained=True)
 # gen_data = np.random.uniform(-20, 20, (1, 3, img_resize[0], img_resize[1])).astype(np.float32)
 gen_data = content_img.data.copy()
-gen_img = dazero.Parameter(gen_data)
+gen_img = dazero.Tensor(gen_data)
 gen_model = dazero.models.Model()
 gen_model.param = gen_img
 optimizer = dazero.optimizers.AdaGrad(gen_model, lr=lr)

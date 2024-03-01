@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from dazero import Parameter
+from dazero import Tensor
 import dazero.functions as F
 from dazero.utils import gradient_check, array_allclose
 
@@ -9,25 +9,25 @@ class TestGetitem(unittest.TestCase):
 
     def test_forward1(self):
         x_data = np.arange(12).reshape((2, 2, 3))
-        x = Parameter(x_data)
+        x = Tensor(x_data)
         y = F.get_item(x, 0)
         self.assertTrue(array_allclose(y.data, x_data[0]))
 
     def test_forward1a(self):
         x_data = np.arange(12).reshape((2, 2, 3))
-        x = Parameter(x_data)
+        x = Tensor(x_data)
         y = x[0]
         self.assertTrue(array_allclose(y.data, x_data[0]))
 
     def test_forward2(self):
         x_data = np.arange(12).reshape((2, 2, 3))
-        x = Parameter(x_data)
+        x = Tensor(x_data)
         y = F.get_item(x, (0, 0, slice(0, 2, 1)))
         self.assertTrue(array_allclose(y.data, x_data[0, 0, 0:2:1]))
 
     def test_forward3(self):
         x_data = np.arange(12).reshape((2, 2, 3))
-        x = Parameter(x_data)
+        x = Tensor(x_data)
         y = F.get_item(x, (Ellipsis, 2))
         self.assertTrue(array_allclose(y.data, x_data[..., 2]))
 

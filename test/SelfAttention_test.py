@@ -7,7 +7,7 @@ import numpy as np
 from torch import nn
 import torch.nn.functional as F
 
-from dazero import transformers, Parameter, Variable
+from dazero import transformers, Tensor, Variable
 
 
 def mask_(matrices, maskval=0.0, mask_diagonal=True):
@@ -80,7 +80,7 @@ model.toValues.W.data = model_torch.tovalues.weight.T.detach().numpy()
 model.unifyHeads.W.data = model_torch.unifyheads.weight.T.detach().numpy()
 model.unifyHeads.b.data = model_torch.unifyheads.bias.detach().numpy()
 
-x = Parameter(x)
+x = Tensor(x)
 res = model(x)
 assert np.allclose(res.data, res_torch.detach().numpy(), atol=1e-7) == True
 

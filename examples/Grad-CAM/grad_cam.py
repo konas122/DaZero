@@ -42,3 +42,4 @@ heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
 heatmap_on_img = heatmap * 0.4 + img
 
 cv2.imwrite('grad_cam.png', heatmap_on_img)
+print('Done')
