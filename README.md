@@ -7,7 +7,6 @@ Deep Learning Framework from Zero
 ## Environment
 
 ```shell
-git
 python
 graphviz
 ```
