@@ -26,6 +26,7 @@ class Model(Layer):
 class Sequential(Model):
     def __init__(self, *layers):
         super().__init__()
+        self.index = 0
         self.layers = []
         for i, layer in enumerate(layers):
             setattr(self, 'l' + str(i), layer)
@@ -35,6 +36,19 @@ class Sequential(Model):
         for layer in self.layers:
             x = layer(x)
         return x
+    
+    def __getitem__(self, index):
+        return self.layers[index]
+    
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index >= len(self.layers):
+            raise StopIteration
+        layer = self.layers[self.index]
+        self.index += 1
+        return layer
 
 
 # =============================================================================
