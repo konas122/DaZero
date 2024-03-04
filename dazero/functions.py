@@ -489,7 +489,7 @@ def dropout(x, dropout_ratio=0.5):
     return x
 
 
-# ================== batch_norm / embed_id / layer_norm =====================
+# ================== batch_norm / embedding / layer_norm =====================
 
 class BatchNorm2d(Function):
     def __init__(self, mean, var, decay, eps):
