@@ -12,6 +12,7 @@ y = F.reshape(x, (6,))
 y.backward(retain_grad=True)
 print(x.grad)
 
+np.random.seed(0)
 x = Variable(np.random.randn(1, 2, 3))
 y = x.reshape((2, 3))
 print(y.shape)

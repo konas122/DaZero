@@ -6,6 +6,8 @@ import numpy as np
 from dazero import Variable
 import dazero.functions as F
 
+
+np.random.seed(0)
 x = Variable(np.random.randn(2, 3))
 W = Variable(np.random.randn(3, 4))
 y = F.matmul(x, W)

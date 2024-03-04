@@ -23,6 +23,7 @@ inputs = Variable(inputs)
 position = pos_emb(inputs)
 position_torch = pos_emb_torch(inputs_torch)
 
+np.random.seed(0)
 grad = np.random.randn(*position.shape)
 position.grad = Variable(grad)
 position.backward()

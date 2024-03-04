@@ -11,6 +11,7 @@ import torch.nn.functional as F
 from dazero import Tensor, Variable
 
 
+np.random.seed(0)
 x = np.random.randn(2, 3, 4).astype(np.float32)
 x_torch = torch.from_numpy(x).requires_grad_()
 x = Tensor(x)

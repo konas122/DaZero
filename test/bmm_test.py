@@ -10,6 +10,7 @@ from dazero import Tensor
 import dazero.functions as F
 
 
+np.random.seed(0)
 input = np.random.randn(2, 3, 4)
 mat2 = np.random.randn(2, 4, 5)
 

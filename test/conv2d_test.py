@@ -6,6 +6,8 @@ from dazero import Variable
 import dazero.functions as F
 
 
+np.random.seed(0)
+
 # im2col
 x1 = np.random.rand(1, 3, 7, 7)
 col1 = F.im2col(x1, kernel_size=5, stride=1, pad=0, to_matrix=True)

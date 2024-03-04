@@ -57,6 +57,7 @@ def torch_compare_layernorm(normalized_shape, inputs, gamma, beta, delta=''):
 
 
 if __name__ == "__main__":
+    np.random.seed(0)
     inputs = np.random.rand(100, 100, 30, 30).astype(np.float64)
     normalized_shape = (100, 30, 30)
     gamma = np.random.rand(100, 30, 30).astype(np.float64)

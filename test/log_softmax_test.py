@@ -11,6 +11,7 @@ import dazero.functions as D
 
 
 dim = 1
+np.random.seed(0)
 x = np.random.randn(40, 3, 2)
 x_torch = torch.from_numpy(x).requires_grad_()
 x = Variable(x)

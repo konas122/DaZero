@@ -16,6 +16,7 @@ dim = 5
 
 # ============================== 2D Tensor =================================
 
+np.random.seed(0)
 x = np.random.randn(n, dim)
 x_torch = torch.from_numpy(x).requires_grad_()
 x = Tensor(x)

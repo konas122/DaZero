@@ -67,6 +67,7 @@ class SelfAttention(nn.Module):
         return self.unifyheads(out)
 
 dim = 12
+np.random.seed(0)
 x = np.random.randn(10, 3, dim).astype(np.float32)
 x_torch = torch.from_numpy(x).requires_grad_()
 model_torch = SelfAttention(dim)

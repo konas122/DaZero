@@ -5,6 +5,7 @@ import numpy as np
 from dazero import test_mode
 import dazero.functions as F
 
+
 x = np.ones(5)
 print(x)
 
