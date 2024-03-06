@@ -31,10 +31,12 @@ class Sequential(Model):
         for i, layer in enumerate(layers):
             setattr(self, 'l' + str(i), layer)
             self.layers.append(layer)
+        self.len = len(self.layers)
 
     def forward(self, x):
         for layer in self.layers:
             x = layer(x)
+        self.index = 0
         return x
     
     def __getitem__(self, index):
@@ -43,8 +45,12 @@ class Sequential(Model):
     def __iter__(self):
         return self
 
+    def __len__(self):
+        return self.len
+
     def __next__(self):
-        if self.index >= len(self.layers):
+        if self.index >= self.len:
+            self.index = 0
             raise StopIteration
         layer = self.layers[self.index]
         self.index += 1

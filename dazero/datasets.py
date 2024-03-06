@@ -32,6 +32,10 @@ class Dataset:
 
     def __len__(self):
         return len(self.data)
+    
+    @property
+    def shape(self):
+        return self.data.shape
 
     def prepare(self):
         pass
