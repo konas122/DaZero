@@ -10,14 +10,19 @@ from dazero import Dataset, cuda
 
 
 class DataLoader:
-    def __init__(self, dataset, batch_size, shuffle=True, gpu=False):
+    def __init__(self, dataset, batch_size, shuffle=True, gpu=False, drop_last=False):
         if not isinstance(dataset, Dataset):
             raise TypeError("It must be of type dazero.Dataset")
         self.dataset = dataset
+        self.drop_last = drop_last
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.data_size = len(dataset)
-        self.max_iter = math.ceil(self.data_size / batch_size)
+        
+        if drop_last:
+            self.max_iter = self.data_size // batch_size
+        else:
+            self.max_iter = math.ceil(self.data_size / batch_size)
         self.gpu = gpu
 
         self._reset()
