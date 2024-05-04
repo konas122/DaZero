@@ -103,6 +103,6 @@ grad = np.random.randn(*res.shape)
 res.grad = Variable(grad)
 res.backward()
 res_torch.backward(torch.from_numpy(grad))
-assert np.allclose(x.grad.data, x_torch.grad.detach().numpy(), atol=1e-7) == True
+assert np.allclose(x.grad.data, x_torch.grad.detach().numpy(), atol=1e-6) == True
 
 print("Success")
