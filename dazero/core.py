@@ -3,7 +3,6 @@ import contextlib
 import numpy as np
 
 import dazero
-import dazero.cuda
 
 
 class Config:
@@ -174,8 +173,6 @@ class Variable:
             self.data = dazero.cuda.as_numpy(self.data)
 
     def to_gpu(self):
-        if dazero.cuda.gpu_enable == False:
-            return
         if self.data is not None:
             self.data = dazero.cuda.as_cupy(self.data)
 

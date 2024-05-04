@@ -60,9 +60,6 @@ class DataLoader:
         self.gpu = False
 
     def to_gpu(self):
-        if cuda.gpu_enable == False:
-            self.gpu = False
-            return
         self.gpu = True
 
 
