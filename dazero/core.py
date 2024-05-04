@@ -3,7 +3,7 @@ import contextlib
 import numpy as np
 
 import dazero
-import dazero.cuda
+# import dazero.cuda
 
 
 class Config:
