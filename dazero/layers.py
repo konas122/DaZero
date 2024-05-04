@@ -45,6 +45,8 @@ class Layer:
             param.to_cpu()
 
     def to_gpu(self):
+        if cuda.gpu_enable == False:
+            return
         for param in self.params():
             param.to_gpu()
 
