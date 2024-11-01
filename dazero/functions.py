@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 
 import dazero
@@ -469,6 +470,7 @@ def accuracy(y, t):
     """
     [WAR] This function is not differentiable.
     """
+    warnings.warn('Function `accuracy` is not differentiable.', UserWarning)
     y, t = as_variable(y), as_variable(t)
 
     pred = y.data.argmax(axis=1).reshape(t.shape)

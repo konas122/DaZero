@@ -175,8 +175,7 @@ def reshape_sum_backward(gy, x_shape, axis, keepdims):
     Args:
         gy (dazero.Variable): Gradient variable from the output by backprop.
         x_shape (tuple): Shape used at sum function's forward.
-        axis (None or int or tuple of ints): Axis used at sum function's
-            forward.
+        axis (None or int or tuple of ints): Axis used at sum function's forward.
         keepdims (bool): Keepdims used at sum function's forward.
 
     Returns:

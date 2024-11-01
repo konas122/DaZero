@@ -304,8 +304,7 @@ def im2col(x, kernel_size, stride=1, pad=0, to_matrix=True):
     """Extract patches from an image based on the filter.
 
     Args:
-        x (`dazero.Variable` or `ndarray`): Input variable of shape
-            `(N, C, H, W)`
+        x (`dazero.Variable` or `ndarray`): Input variable of shape `(N, C, H, W)`
         kernel_size (int or (int, int)): Size of kernel.
         stride (int or (int, int)): Stride of kernel.
         pad (int or (int, int)): Spatial padding width for input arrays.
@@ -313,9 +312,7 @@ def im2col(x, kernel_size, stride=1, pad=0, to_matrix=True):
             shape is `(N*OH*OW, C*KH*KW)`
 
     Returns:
-        `dazero.Variable`: Output variable. If the `to_matrix` is False, the
-            output shape is `(N, C, KH, KW, OH, OW)`, otherwise
-            `(N*OH*OW, C*KH*KW)`.
+        `dazero.Variable`: Output variable. If the `to_matrix` is False, the output shape is `(N, C, KH, KW, OH, OW)`, otherwise `(N*OH*OW, C*KH*KW)`.
 
     Notation:
     - `N` is the batch size.
