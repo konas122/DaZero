@@ -18,7 +18,7 @@ class DataLoader:
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.data_size = len(dataset)
-        
+
         if drop_last:
             self.max_iter = self.data_size // batch_size
         else:

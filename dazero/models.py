@@ -38,10 +38,10 @@ class Sequential(Model):
             x = layer(x)
         self.index = 0
         return x
-    
+
     def __getitem__(self, index):
         return self.layers[index]
-    
+
     def __iter__(self):
         return self
 

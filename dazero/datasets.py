@@ -32,7 +32,7 @@ class Dataset:
 
     def __len__(self):
         return len(self.data)
-    
+
     @property
     def shape(self):
         return self.data.shape
@@ -84,7 +84,7 @@ class MNIST(Dataset):
         super().__init__(train, transform, target_transform)
 
     def prepare(self):
-        url = 'http://yann.lecun.com/exdb/mnist/'
+        url = 'https://github.com/hamlinzheng/mnist/tree/master/dataset/'
         train_files = {'target': 'train-images-idx3-ubyte.gz',
                        'label': 'train-labels-idx1-ubyte.gz'}
         test_files = {'target': 't10k-images-idx3-ubyte.gz',
