@@ -84,7 +84,7 @@ class MNIST(Dataset):
         super().__init__(train, transform, target_transform)
 
     def prepare(self):
-        url = 'https://github.com/konas122/DaZero/releases/tag/v1.1/'
+        url = 'http://yann.lecun.com/exdb/mnist/'
         train_files = {'target': 'train-images-idx3-ubyte.gz',
                        'label': 'train-labels-idx1-ubyte.gz'}
         test_files = {'target': 't10k-images-idx3-ubyte.gz',
