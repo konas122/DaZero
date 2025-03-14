@@ -40,7 +40,7 @@ try:
 except HTTPError as e:
     print("Failed to download the datasets.", file=sys.stderr)
     print(e, file=sys.stderr)
-    sys.exit(-1)
+    sys.exit(0)
 
 model = MLP(784, (1000, 10))
 optimizer = optimizers.SGD(model)
