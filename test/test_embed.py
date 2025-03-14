@@ -18,7 +18,7 @@ class TestEmbedID(unittest.TestCase):
                 [0, 0, 0, 1, 0],
                 [0, 0, 0, 0, 1]]]
         )
-        self.assertTrue(np.alltrue(y.data == expected))
+        self.assertTrue(np.all(y.data == expected))
 
     def test_backward(self):
         x = Variable(np.array([[1, 2, 3], [2, 3, 4]]))
@@ -33,4 +33,4 @@ class TestEmbedID(unittest.TestCase):
             [2, 2, 2, 2, 2],
              [1, 1, 1, 1, 1]], dtype=np.float64)
 
-        self.assertTrue(np.alltrue(W.grad.data == expected))
+        self.assertTrue(np.all(W.grad.data == expected))
