@@ -136,6 +136,7 @@ def deconv2d(x, W, b=None, stride=1, pad=0, outsize=None):
 
 class Conv2DGradW(Function):
     def __init__(self, conv2d):
+        super().__init__()
         W = conv2d.inputs[1]
         kh, kw = W.shape[2:]
         self.kernel_size = (kh, kw)
@@ -187,6 +188,7 @@ class MaxPooling(Function):
 
 class Pooling2DGrad(Function):
     def __init__(self, mpool2d):
+        super().__init__()
         self.mpool2d = mpool2d
         self.kernel_size = mpool2d.kernel_size
         self.stride = mpool2d.stride
@@ -223,6 +225,7 @@ class Pooling2DGrad(Function):
 
 class Pooling2DWithIndexes(Function):
     def __init__(self, mpool2d):
+        super().__init__()
         self.kernel_size = mpool2d.kernel_size
         self.stride = mpool2d.stride
         self.pad = mpool2d.pad

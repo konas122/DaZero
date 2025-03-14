@@ -366,3 +366,12 @@ def pair(x):
         return x
     else:
         raise ValueError
+
+
+class BackwardFun:
+    def __init__(self, f):
+        self.fun = f
+        self.gen = f.generation
+
+    def __lt__(self, other):
+        return self.gen > other.gen

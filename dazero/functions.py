@@ -9,6 +9,9 @@ from dazero.core import Function, Variable, as_variable, as_array
 # ============================== NetWork ================================
 
 class Linear(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x, W, b):
         y = x.dot(W)
         if b is not None:
@@ -41,6 +44,9 @@ def sigmoid_simple(x):
 
 
 class Sigmoid(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         # y = 1 / (1 + xp.exp(-x))
@@ -57,6 +63,9 @@ def sigmoid(x):
 
 
 class ReLU(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         y = xp.maximum(x, 0.0)
@@ -74,6 +83,7 @@ def relu(x):
 
 class LeakyReLU(Function):
     def __init__(self, slope):
+        super().__init__()
         self.slope = slope
 
     def forward(self, x):
@@ -101,6 +111,7 @@ def softmax_simple(x, axis=1):
 
 class Softmax(Function):
     def __init__(self, axis=1):
+        super().__init__()
         self.axis = axis
 
     def forward(self, x):
@@ -123,6 +134,7 @@ def softmax(x, axis=1):
 
 class LogSoftmax(Function):
     def __init__(self, axis=1):
+        super().__init__()
         self.axis = axis
 
     def forward(self, x):
@@ -142,6 +154,9 @@ def log_softmax(x, axis=1):
 # ============================== Matrix ================================
 
 class Dot(Function):
+    def __init__(self):
+        super().__init__()
+
     """Matrix multiplication for 1D tensor"""
     def forward(self, x, W):
         f = lambda xs: (xs.ndim > 1 or xs.ndim == 2 and xs.shape[1] == 1)
@@ -164,6 +179,9 @@ def dot(x, W):
 
 
 class Matmul(Function):
+    def __init__(self):
+        super().__init__()
+
     """Matrix multiplication for 2D and 3D tensor"""
     def forward(self, x, W):
         if x.ndim < 2 or W.ndim < 2:
@@ -191,6 +209,9 @@ def matmul(x, W):
 
 
 class Bmm(Function):
+    def __init__(self):
+        super().__init__()
+
     """Matrix multiplication for 3D tensor"""
     def forward(self, x, W):
         if x.ndim != 3 or W.ndim != 3:
@@ -214,6 +235,9 @@ def bmm(x, W):
 # ============================== Loss =================================
 
 class MSELoss(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x0, x1):
         diff = x0 - x1
         y = (diff ** 2).sum() / len(diff)
@@ -242,6 +266,9 @@ def softmax_cross_entropy_simple(x, t):
 
 
 class SoftmaxCrossEntropy(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x, t):
         N = x.shape[0]
         log_z, xp = utils.logsumexp(x, axis=1)
@@ -313,6 +340,7 @@ def binary_cross_entropy(p, t):
 
 class Reshape(Function):
     def __init__(self, shape):
+        super().__init__()
         self.shape = shape
         self.x_shape = None
 
@@ -332,6 +360,7 @@ def reshape(x, shape):
 
 class Transpose(Function):
     def __init__(self, axes=None):
+        super().__init__()
         self.axes = axes
 
     def forward(self, x):
@@ -352,6 +381,7 @@ def transpose(x, axes=None):
 
 class Sum(Function):
     def __init__(self, axis, keepdims):
+        super().__init__()
         self.axis = axis
         self.keepdims = keepdims
 
@@ -371,6 +401,7 @@ def sum(x, axis=None, keepdims=False):
 
 class BroadcastTo(Function):
     def __init__(self, shape):
+        super().__init__()
         self.shape = shape
         self.x_shape = None
 
@@ -400,6 +431,7 @@ mean = average
 
 class SumTo(Function):
     def __init__(self, shape):
+        super().__init__()
         self.shape = shape
         self.x_shape = None
 
@@ -420,6 +452,7 @@ def sum_to(x, shape):
 
 class GetItem(Function):
     def __init__(self, slices):
+        super().__init__()
         if isinstance(slices, Variable):
             slices = slices.data
         self.slices = slices
@@ -435,6 +468,7 @@ class GetItem(Function):
 
 class GetItemGrad(Function):
     def __init__(self, slices, in_shape):
+        super().__init__()
         self.slices = slices
         self.in_shape = in_shape
 
@@ -495,6 +529,7 @@ def dropout(x, dropout_ratio=0.5):
 
 class BatchNorm2d(Function):
     def __init__(self, mean, var, decay, eps):
+        super().__init__()
         self.avg_mean = mean
         self.avg_var = var
         self.decay = decay
@@ -583,6 +618,7 @@ def embedding(x, W):
 
 class LayerNorm(Function):
     def __init__(self, normalized_shape, mean, var, eps):
+        super().__init__()
         if isinstance(normalized_shape, int):
             normalized_shape = (normalized_shape,)
         self.normalized_shape = normalized_shape
@@ -671,6 +707,9 @@ def layer_norm(x, normalized_shape, gamma=None, beta=None, mean=None, var=None, 
 # ============================= Basic functions =============================
 
 class Sin(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         y = xp.sin(x)
@@ -686,6 +725,9 @@ def sin(x):
 
 
 class Cos(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         y = xp.cos(x)
@@ -701,6 +743,9 @@ def cos(x):
 
 
 class Tanh(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         y = xp.tanh(x)
@@ -716,6 +761,9 @@ def tanh(x):
 
 
 class Exp(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         y = xp.exp(x)
@@ -731,6 +779,9 @@ def exp(x):
 
 
 class Log(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         xp = cuda.get_array_module(x)
         y = xp.log(x)
@@ -749,6 +800,7 @@ def log(x):
 
 class Max(Function):
     def __init__(self, axis=None, keepdims=False):
+        super().__init__()
         self.axis = axis
         self.keepdims = keepdims
 
@@ -769,6 +821,9 @@ class Max(Function):
 
 
 class Min(Max):
+    def __init__(self, axis=None, keepdims=False):
+        super().__init__(axis, keepdims)
+
     def forward(self, x):
         y = x.min(axis=self.axis, keepdims=self.keepdims)
         return y
@@ -783,6 +838,7 @@ def min(x, axis=None, keepdims=False):
 
 class Clip(Function):
     def __init__(self, x_min, x_max):
+        super().__init__()
         self.x_min = x_min
         self.x_max = x_max
 

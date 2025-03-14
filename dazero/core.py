@@ -1,6 +1,7 @@
 import weakref
 import contextlib
 import numpy as np
+from queue import PriorityQueue
 
 import dazero
 
@@ -70,23 +71,18 @@ class Variable:
             xp = dazero.cuda.get_array_module(self.data)
             self.grad = Variable(xp.ones_like(self.data))
 
-        funcs = []
+        funcs = PriorityQueue()
         seen_set = set()
 
         def add_func(f):
             if f not in seen_set:
                 seen_set.add(f)
-                funcs.append(f)
-                funcs.sort(key=lambda x: x.generation)
-                # for i, x in enumerate(funcs):
-                #     if f.generation < x.generation:
-                #         funcs.insert(i, f)
-                #         break
+                funcs.put(dazero.utils.BackwardFun(f))
 
         add_func(self.creator)
 
-        while funcs:
-            f = funcs.pop()
+        while not funcs.empty():
+            f = funcs.get().fun
             gys = [output().grad for output in f.outputs]
 
             with using_config('enable_backprop', retain_graph):
@@ -207,6 +203,9 @@ class Tensor(Variable):
 
 class Function:
 
+    def __init__(self):
+        pass
+
     def __call__(self, *inputs):
         inputs = [as_variable(x) for x in inputs]
         xs = [x.data for x in inputs]
@@ -235,6 +234,9 @@ class Function:
 # ============================ Basic Operation ==============================
 
 class Add(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x0, x1):
         self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 + x1
@@ -253,6 +255,9 @@ def add(x0, x1):
 
 
 class Mul(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x0, x1):
         y = x0 * x1
         return y
@@ -272,6 +277,9 @@ def mul(x0, x1):
 
 
 class Neg(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x):
         return -x
 
@@ -283,6 +291,9 @@ def neg(x):
 
 
 class Sub(Function):
+    def  __init__(self):
+        super().__init__()
+
     def forward(self, x0, x1):
         self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 - x1
@@ -306,6 +317,9 @@ def rsub(x0, x1):
 
 
 class Div(Function):
+    def __init__(self):
+        super().__init__()
+
     def forward(self, x0, x1):
         y = x0 / x1
         return y
@@ -330,6 +344,7 @@ def rdiv(x0, x1):
 
 class Pow(Function):
     def __init__(self, c):
+        super().__init__()
         self.c = c
 
     def forward(self, x):

@@ -1,5 +1,8 @@
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from urllib.error import HTTPError
+
 import dazero
 import dazero.layers as L
 import dazero.functions as F
@@ -31,8 +34,14 @@ class MLP(Model):
 max_epoch = 1
 batch_size = 100
 
-train_set = dazero.datasets.MNIST(train=True)
-train_loader = DataLoader(train_set, batch_size)
+try:
+    train_set = dazero.datasets.MNIST(train=True)
+    train_loader = DataLoader(train_set, batch_size)
+except HTTPError as e:
+    print("Failed to download the datasets.", file=sys.stderr)
+    print(e, file=sys.stderr)
+    sys.exit(-1)
+
 model = MLP(784, (1000, 10))
 optimizer = optimizers.SGD(model)
 

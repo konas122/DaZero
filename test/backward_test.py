@@ -20,7 +20,7 @@ def add(x0, x1):
 class Square(Function):
     def forward(self, x):
         return x ** 2
-    
+
     def backward(self, gy):
         x = self.inputs[0].data
         gx = 2 * x * gy
@@ -30,7 +30,7 @@ class Square(Function):
 class Exp(Function):
     def forward(self, x):
         return np.exp(x)
-    
+
     def backward(self, gy):
         x = self.inputs[0].data
         gx = np.exp(x) * gy

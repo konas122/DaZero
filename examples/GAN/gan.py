@@ -136,7 +136,7 @@ for epoch in range(max_epoch):
             epoch_detail = epoch + cnt / train_loader.max_iter
             print('epoch: {:.2f},\tloss_g: {:.4f},\tloss_d: {:.4f}'.format(
                 epoch_detail, float(avg_loss_g/cnt), float(avg_loss_d/cnt)))
-        
+
         interval = 100 if use_gpu else 50
         if cnt % interval == 0:
             generate_image(cnt)
